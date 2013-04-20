@@ -27,3 +27,6 @@ html lang="en"
 		script type="text/javascript" src="{{url_for('static', filename='js/widget.js')   }}"                      | {# #}
 		script type="text/javascript" src="{{url_for('static', filename='js/formatting.js')  }}"                   | {# #}
 		script type="text/javascript" src="{{url_for('static', filename='js/nasa.js')  }}"                         | {# #}
+
+		script type="text/javascript"
+			start();
