@@ -1,0 +1,6 @@
+div.ContribMap.widget data-widget="nasa.ContribMap" 
+	div#contrib-map style="width:400px; height:300px" | {# #}
+		canvas id="sphere" width="400" height="400" | {# #} 
+		#glow-shadows.earth | {# #}
+		canvas id="flights" width="400" height="400" | {# #}
+		#locations | {# #}
