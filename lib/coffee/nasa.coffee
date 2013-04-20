@@ -64,5 +64,48 @@ class nasa.ContribForm extends Widget
 	hasGetUserMedia: () =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
 
+class nasa.Navigation extends Widget
+
+	constructor: ->
+		@UIS = {
+			slides	: '.slide'
+			nextButtons : '.next'		
+		}
+
+	bindUI: (ui) =>		
+		super
+		this.init()
+		this.relayout()
+		$(window).on('resize',this.relayout)
+		@uis.nextButtons.each( (idx, el) => 
+			$(el).click(=>
+				console.log "click"
+				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
+				nextSlide = $('.slide[data-position='+nextPos+']')
+				console.log "nextPos "+nextPos+" "+nextSlide.offset().top
+				#$(window).scrollTop(nextSlide.offset().top)
+				$("html, body").animate({ scrollTop: nextSlide.offset().top});
+			)
+		)
+
+	init:() =>
+		slideIdx=0
+		for slide in @uis.slides
+			slide = $(slide)
+			slide.attr('data-position', slideIdx)
+			slideIdx++
+
+
+	relayout:()=>
+		height = $(window).height()
+		@uis.slides.height(height)
+		@uis.slides.width($(window).width())
+		for slide in @uis.slides
+			slide = $(slide)
+			slide.css("top",slide.attr('data-position') * height)
+	
+	goToNextSlide:()=>
+
+
 start()
 # EOF

@@ -1,12 +1,13 @@
 
-TEXT_COLOR  = #FFF
+TEXT_COLOR  = #222
 TILE_BRAND_COLOR        = "rgba(10,12,6,0.7)"
 ALTERNATE_FONT = Verdana, sans-serif	
 
 body:
-	background-color 	: black
+	background-color 	: white
 	background-size 	: cover
 	color   : $TEXT_COLOR
+	overflow : hidden
 	
 	a: 
 		color 	: #98B2C6
@@ -20,8 +21,28 @@ body:
 	color   : $TEXT_COLOR
 	padding : 20px 0 0 0px
 
+.Navigation:
+	overflow: hidden
+	.slide:
+		width : 100%
+		border : 1px solid #fff
+		position : absolute
+		left : 0
+		padding: 20px
+	.next:
+		position : absolute
+		bottom : 60px
+		left : 48%
+		margin : auto
+		background-color : #222
+		color : white
+		cursor : pointer
 
-.slide:
-	width : 100%
-	min-height : 800px  
-	border : 1px solid #fff
+#imageZone:
+	margin: 30px 0;
+	-webkit-box-shadow: 0 0 50px rgba(0,0,0,0.13);
+	box-shadow: 0 0 50px rgba(0,0,0,0.13);
+	padding: 4px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+
