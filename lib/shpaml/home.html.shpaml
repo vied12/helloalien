@@ -53,9 +53,5 @@ div.widget.Navigation data-widget="nasa.Navigation"
 		.don
 			p | bottle 
 
-
-		form method="post" action='/api/upload/sound' enctype='multipart/form-data'
-			> input type='file' name='sound'
-			> input type='submit' value='ok' name='submit'
 {% endblock %}
 
