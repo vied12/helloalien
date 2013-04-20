@@ -35,13 +35,6 @@ app.config.from_pyfile("settings.cfg")
 def index():
 	return render_template('home.html')
 
-@app.route('/cdiscount')
-def cdiscount():
-	return render_template('cdiscount.html')
-
-@app.route('/wordcloud')
-def wordcloud():
-	return render_template('wordcloud.html')
 
 # -----------------------------------------------------------------------------
 #

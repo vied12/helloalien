@@ -6,11 +6,13 @@ html lang="en"
 		> link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'
 		> link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/jquery.jscrollpane.css')}}" media="all"
 		> link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/base.css')}}" media="all"
-		> link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/demo.css')}}" media="all"
+		> link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/nasa.css')}}" media="all"
+
 		
 		> link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/vader/jquery-ui.css" media="all"
 		script type="text/javascript" src="{{url_for('static', filename='js/jquery172.js')}}" | {# #}
 		script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js" | {# #}
+		script type="text/javascript" src="https://www.google.com/jsapi" | {# #}
 
 
 	body.use-base
@@ -21,4 +23,5 @@ html lang="en"
 		script type="text/javascript" src="{{url_for('static', filename='js/hashchange.js')  }}"              | {# #}
 		script type="text/javascript" src="{{url_for('static', filename='js/widget.js')   }}"                 | {# #}
 		script type="text/javascript" src="{{url_for('static', filename='js/formatting.js')  }}"              | {# #}
-		script type="text/javascript" src="{{url_for('static', filename='js/nasa.js')  }}"                 | {# #}
+		script type="text/javascript" src="{{url_for('static', filename='js/dropzone.js')  }}"                | {# #}
+		script type="text/javascript" src="{{url_for('static', filename='js/nasa.js')  }}"                    | {# #}

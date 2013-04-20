@@ -18,7 +18,7 @@ def preprocess(app, request):
 	def render():
 		if request.base_url.find("static") == -1:
 			_render_shpaml(app)
-			_render_coffee(app)
+			#_render_coffee(app)
 			_render_coverCSS(app)
 			#_render_jade(app)
 
@@ -120,7 +120,7 @@ def _collect_static(app):
 						os.makedirs(os.path.dirname(dst))
 					shutil.copyfile(f, dst)
 	_render_shpaml(app)
-	_render_coffee(app)
+	#_render_coffee(app)
 	_render_coverCSS(app)
 	_render_jade(app)
 # EOF
