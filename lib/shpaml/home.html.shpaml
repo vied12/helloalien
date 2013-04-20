@@ -37,7 +37,7 @@
 			
 	#theend.slide
 		.earth
-			p | EARTH
+			{% include 'carte.html' %}
 		.radio
 			p | RADIO PLAYER playlist
 		.don
