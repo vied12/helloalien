@@ -86,10 +86,6 @@ def upload_file(f, referer, type='audio'):
 def index():
 	return render_template('home.html')
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 94cfb86e04959a7e3749729e00a8d1d77cbb911f
 # -----------------------------------------------------------------------------
 #
 # Utils
