@@ -15,6 +15,42 @@ URL      = new window.serious.URL()
 Format   = window.serious.format
 Utils    = window.serious.Utils
 
+class nasa.ContribMap extends Widget
+    constructor:() ->
+        @UIS = {
+            cMap: '#sphere'
+        }
+        @ACTIONS = []
+        @MapAPI = null
+        @locations = {}
+
+    bindUI:() =>
+        super
+        console.log "bindUI"
+        this.getLastContribs()
+        @uis.cMap.earth3d {
+            texture: '/static/images/earth1024x1024.jpg',
+            dragElement: $('#locations') 
+        }
+
+    getLastContribs: () =>
+        console.log "getLastContribs()"
+        $.ajax
+            url: '/api/map'
+            type: 'GET'
+            dataType: 'json'
+            success: @onContribReceived
+            error: console.log
+
+
+    onContribReceived: (data) => 
+        console.log "Received last contribs : ", data 
+        
+    onMapInitError: (data) =>
+        console.error "An error occured while initliazing google earth: ", data
+
+    onMapInitSuccess: () =>
+
 
 class nasa.ContribForm extends Widget
 
@@ -37,6 +73,7 @@ class nasa.ContribForm extends Widget
 
 	bindUI: (ui) =>		
 		super
+		console.log "contrib"
 		this.relayout()
 		this.initForm()
 
@@ -85,9 +122,8 @@ class nasa.ContribForm extends Widget
 			# // "image/webp" works in Chrome 18. In other browsers, this will fall back to image/png.
 			@uis.image.attr('src', @uis.canvas[0].toDataURL('image/webp'))
 
-start = ->
-	$(window).load ()->
-		Widget.bindAll()
+	hasGetUserMedia: () =>
+		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
 
 class nasa.Navigation extends Widget
 
@@ -132,5 +168,8 @@ class nasa.Navigation extends Widget
 	goToNextSlide:()=>
 
 
-start()
+
+start = ->
+    $(window).load ()->
+        Widget.bindAll()
 # EOF

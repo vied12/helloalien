@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 html lang="en"
 	head
+		meta charset="utf-8" | {#  #}
 		title | Titanium records
 		> link rel="icon" href="{{url_for('static', filename='images/favicon.ico')}}" type="image/x-icon"
 		> link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'
@@ -15,12 +16,18 @@ html lang="en"
 
 	body.use-base
 		{% block content %}{% endblock %}
-		script type="text/javascript" src="{{url_for('static', filename='js/jquery.jscrollpane.min.js')  }}"  | {# #}
-		script type="text/javascript" src="{{url_for('static', filename='js/jquery.mousewheel.js')  }}"       | {# #}
-		script type="text/javascript" src="{{url_for('static', filename='js/jquery.preload.js')  }}"          | {# #}
-		script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')  }}"          | {# #}	
-		script type="text/javascript" src="{{url_for('static', filename='js/hashchange.js')  }}"              | {# #}
-		script type="text/javascript" src="{{url_for('static', filename='js/dropzone.js')  }}"                | {# #}		
-		script type="text/javascript" src="{{url_for('static', filename='js/widget.js')   }}"                 | {# #}
-		script type="text/javascript" src="{{url_for('static', filename='js/formatting.js')  }}"              | {# #}
-		script type="text/javascript" src="{{url_for('static', filename='js/nasa.js')  }}"                    | {# #}
+		script type="text/javascript" src="{{url_for('static', filename='js/jquery.jscrollpane.min.js')  }}"       | {# #}
+		script type="text/javascript" src="{{url_for('static', filename='js/sphere-hacked.js')}}"                  | {# #}
+		script type="text/javascript" src="{{url_for('static', filename='js/requestanimationframe.polyfill.js')}}" | {# #}
+		script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')  }}"                | {# #}			
+		script type="text/javascript" src="{{url_for('static', filename='js/jquery.earth-3d.js')  }}"              | {# #}
+		script type="text/javascript" src="{{url_for('static', filename='js/jquery.mousewheel.js')  }}"            | {# #}
+		script type="text/javascript" src="{{url_for('static', filename='js/jquery.preload.js')  }}"               | {# #}	
+		script type="text/javascript" src="{{url_for('static', filename='js/hashchange.js')  }}"                   | {# #}
+        script type="text/javascript" src="{{url_for('static', filename='js/dropzone.js')  }}" 		               | {# #}
+		script type="text/javascript" src="{{url_for('static', filename='js/widget.js')   }}"                      | {# #}
+		script type="text/javascript" src="{{url_for('static', filename='js/formatting.js')  }}"                   | {# #}
+		script type="text/javascript" src="{{url_for('static', filename='js/nasa.js')  }}"                         | {# #}
+
+		script type="text/javascript"
+			start();
