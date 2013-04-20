@@ -29,7 +29,7 @@ def get_collection(collection):
 
 def get_contribution(referer):
 	contributions = get_collection('contributions')
-	contrib       =  contributions.find_one(referer=referer)
+	contrib       =  contributions.find_one({"referer":referer})
 	if not contrib:
 		contributions.insert({"referer":referer, "medias":list()})
 		contrib =  get_contribution(referer)
