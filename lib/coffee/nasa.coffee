@@ -15,9 +15,7 @@ URL      = new window.serious.URL()
 Format   = window.serious.format
 Utils    = window.serious.Utils
 
-start = ->
-	$(window).load ()->
-		Widget.bindAll()
+
 
 class nasa.ContribForm extends Widget
 
@@ -28,7 +26,9 @@ class nasa.ContribForm extends Widget
 			imageFile 	: ".imageFile"
 			soundZone	: "#soundZone"
 			soundFile 	: ".soundFile"
-			avatar	: "video"
+			video	: "video"
+			canvas	: "canvas"
+			image	: "img"
 		}
 		@cache = {
 			imageZone : null
@@ -36,7 +36,6 @@ class nasa.ContribForm extends Widget
 		}
 	bindUI: (ui) =>		
 		super
-		console.log "contrib"
 		this.relayout()
 		this.initForm()
 
@@ -48,21 +47,44 @@ class nasa.ContribForm extends Widget
 		@cache.soundZone = new Dropzone("div#soundZone", { url: "/api/upload/sound"})
 		#@uis.soundZone.dropzone({ url: "/api/upload/sound" })
 		#@uis.imageZone.dropzone({ url: "/api/upload/image" })	
+		@initVideo()
 
-	webcamCapture:()=>
-		video = document.querySelector('video')
-		canvas = document.querySelector('canvas')
+
+	hasGetUserMedia: =>
+		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+			navigator.mozGetUserMedia || navigator.msGetUserMedia)
+
+	onFailSoHard: (e) =>
+		console.log('Reeeejected!')
+
+	initVideo: =>
+		if not @hasGetUserMedia()
+			alert('no')
+		window.URL = window.URL || window.webkitURL;
+		navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+			navigator.mozGetUserMedia || navigator.msGetUserMedia;
+		if navigator.getUserMedia
+			navigator.getUserMedia({video: true}, ((localMediaStream) =>
+				my_url = window.webkitURL || window.URL
+				@uis.video.attr('src', my_url.createObjectURL(localMediaStream))
+				# // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
+				# // See crbug.com/110938.
+				@uis.video.get().onloadedmetadata = console.log
+				)
+			, @onFailSoHard)
+		else
+			@uis.video.attr('src', 'somevideo.webm')
+
+	snapshot: =>
 		ctx = canvas.getContext('2d')
-		localMediaStream = null
-		video.addEventListener('click', snapshot, false);
-		#Not showing vendor prefixes or code that works cross-browser.
-		navigator.getUserMedia({video: true}, (stream) =>
-			video.src = window.URL.createObjectURL(stream)
-			localMediaStream = stream
-		, onFailSoHard)
+		if localMediaStream
+			ctx.drawImage(video, 0, 0)
+			# // "image/webp" works in Chrome 18. In other browsers, this will fall back to image/png.
+			uis.image.attr('src', canvas.toDataURL('image/webp'))
 
-	hasGetUserMedia: () =>
-		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
+start = ->
+	$(window).load ()->
+		Widget.bindAll()
 
 class nasa.Navigation extends Widget
 
