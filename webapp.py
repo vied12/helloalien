@@ -17,6 +17,7 @@ import preprocessing.preprocessing as preprocessing
 from embedly import Embedly
 from pymongo import MongoClient
 from bson.json_util import dumps
+from httplib2 import Http
 
 app       = Flask(__name__)
 app.config.from_pyfile("settings.cfg")
@@ -68,10 +69,22 @@ def upload_avatar():
 @app.route('/api/userInfos', methods=['post'])
 def user_infos():
 	user_info            = request.form.to_dict()
+	# add ip
+	user_info['ip']      = request.remote_addr
+	# add coord
+	response, content    = Http().request("http://freegeoip.net/json/%s" % user_info['ip'])
+	content = json.loads(content)
+	user_info['lat']     = content['latitude']
+	user_info['lng']     = content['longitude']
 	contribution         = get_contribution(get_referer())
 	contribution['user'] = user_info
 	get_collection('contributions').save(contribution)
-	return contribution
+	return dumps(contribution)
+
+@app.route('/api/map', methods=['get'])
+def map():
+	contributions = get_collection('contributions')
+	return dumps(contributions.find())
 
 def upload_file(f, referer, type):
 	filename = f.filename
