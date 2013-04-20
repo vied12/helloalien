@@ -16,7 +16,6 @@ Format   = window.serious.format
 Utils    = window.serious.Utils
 
 
-
 class nasa.ContribForm extends Widget
 
 	constructor: ->
