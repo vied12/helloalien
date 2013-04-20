@@ -22,21 +22,34 @@ class nasa.ContribMap extends Widget
         }
         @ACTIONS = []
         @MapAPI = null
+        @locations = {}
 
     bindUI:() =>
         super
-        $('#sphere').earth3d {
+        console.log "bindUI"
+        this.getLastContribs()
+        @uis.cMap.earth3d {
             texture: '/static/images/earth1024x1024.jpg',
-            dragElement: @ui.find('#locations') 
+            dragElement: $('#locations') 
         }
+
+    getLastContribs: () =>
+        console.log "getLastContribs()"
+        $.ajax
+            url: '/api/map'
+            type: 'GET'
+            dataType: 'json'
+            success: @onContribReceived
+            error: console.log
+
+
+    onContribReceived: (data) => 
+        console.log "Received last contribs : ", data 
+        
     onMapInitError: (data) =>
         console.error "An error occured while initliazing google earth: ", data
 
     onMapInitSuccess: () =>
-
-start = ->
-	$(window).load ()->
-		Widget.bindAll()
 
 
 class nasa.ContribForm extends Widget
@@ -83,6 +96,11 @@ class nasa.ContribForm extends Widget
 
 	hasGetUserMedia: () =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
+
+
+start = ->
+    $(window).load ()->
+        Widget.bindAll()
 
 start()
 # EOF
