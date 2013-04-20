@@ -1,0 +1,27 @@
+
+TEXT_COLOR  = #FFF
+TILE_BRAND_COLOR        = "rgba(10,12,6,0.7)"
+ALTERNATE_FONT = Verdana, sans-serif	
+
+body:
+	background-color 	: black
+	background-size 	: cover
+	color   : $TEXT_COLOR
+	
+	a: 
+		color 	: #98B2C6
+	.disableTextSelection:
+		-webkit-user-select 	: none
+		-moz-user-select 		: none  
+		-ms-user-select 		: none      
+		user-select 			: none
+
+.ContribForm:
+	color   : $TEXT_COLOR
+	padding : 20px 0 0 0px
+
+
+.slide:
+	width : 100%
+	min-height : 800px  
+	border : 1px solid #fff
