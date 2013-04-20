@@ -5,8 +5,11 @@ div.widget.Navigation data-widget="nasa.Navigation"
 	#intro.slide
 		.header
 			h1 | Earth in the Botlle 
-		.topo.left
-			depuis 30 ans..
+		.row-fluid show-grid
+			.topo.span4
+				depuis 30 ans..
+			.topo.span5
+				EARTH is living
 		.next.btn-large | Next
 
 	#analyze.slide	
@@ -23,11 +26,13 @@ div.widget.Navigation data-widget="nasa.Navigation"
 				video autoplay | {##}
 				> img
 				canvas | {##}
+				> input.avatarName type="text" name="avatarName" 
+				> input.email type="text" name="email"  
 				> input type="file" accept="image/*;capture=camera"
 
 			#imageZone 
 				form enctype="multipart/form-data" method="POST"
-					> input.image_link type="text" name="image_link" 
+					> input.imageLink type="text" name="imageLink" 
 					> input type="submit" value="envoyer"
 					.fallback
 						> input.imageFile type="file" name="imageFile" data-type="image"

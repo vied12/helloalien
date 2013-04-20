@@ -65,10 +65,12 @@ class nasa.ContribForm extends Widget
 			canvas	: "canvas"
 			image	: "img"
 		}
+		
 		@cache = {
 			imageZone : null
 			soundZone : null
 		}
+
 	bindUI: (ui) =>		
 		super
 		console.log "contrib"
@@ -79,12 +81,7 @@ class nasa.ContribForm extends Widget
 		console.log "relayout"
 
 	initForm:() =>
-		@cache.imageZone = new Dropzone("div#imageZone", { url: "/api/upload/image"})
-		@cache.soundZone = new Dropzone("div#soundZone", { url: "/api/upload/sound"})
-		#@uis.soundZone.dropzone({ url: "/api/upload/sound" })
-		#@uis.imageZone.dropzone({ url: "/api/upload/image" })	
 		@initVideo()
-
 
 	hasGetUserMedia: =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -136,11 +133,8 @@ class nasa.Navigation extends Widget
 		$(window).on('resize',this.relayout)
 		@uis.nextButtons.each( (idx, el) => 
 			$(el).click(=>
-				console.log "click"
 				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
 				nextSlide = $('.slide[data-position='+nextPos+']')
-				console.log "nextPos "+nextPos+" "+nextSlide.offset().top
-				#$(window).scrollTop(nextSlide.offset().top)
 				$("html, body").animate({ scrollTop: nextSlide.offset().top});
 			)
 		)
@@ -152,7 +146,6 @@ class nasa.Navigation extends Widget
 			slide.attr('data-position', slideIdx)
 			slideIdx++
 
-
 	relayout:()=>
 		height = $(window).height()
 		@uis.slides.height(height)
@@ -160,12 +153,10 @@ class nasa.Navigation extends Widget
 		for slide in @uis.slides
 			slide = $(slide)
 			slide.css("top",slide.attr('data-position') * height)
-	
-	goToNextSlide:()=>
-
-
 
 start = ->
     $(window).load ()->
         Widget.bindAll()
+start()
+
 # EOF
