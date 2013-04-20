@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+	SPACE BOTTLES.
+	prepare capsule
+	send message
+{% endblock %}
