@@ -71,8 +71,7 @@ def user_infos():
 	contribution         = get_contribution(get_referer())
 	contribution['user'] = user_info
 	get_collection('contributions').save(contribution)
-
-	return "coucou"
+	return contribution
 
 def upload_file(f, referer, type):
 	filename = f.filename
