@@ -61,7 +61,9 @@ class nasa.ContribForm extends Widget
 			imageFile 	: ".imageFile"
 			soundZone	: "#soundZone"
 			soundFile 	: ".soundFile"
-			avatar	: "video"
+			video	: "video"
+			canvas	: "canvas"
+			image	: "img"
 		}
 		@cache = {
 			imageZone : null
@@ -81,25 +83,89 @@ class nasa.ContribForm extends Widget
 		@cache.soundZone = new Dropzone("div#soundZone", { url: "/api/upload/sound"})
 		#@uis.soundZone.dropzone({ url: "/api/upload/sound" })
 		#@uis.imageZone.dropzone({ url: "/api/upload/image" })	
+		@initVideo()
 
-	webcamCapture:()=>
-		video = document.querySelector('video')
-		canvas = document.querySelector('canvas')
+
+	hasGetUserMedia: =>
+		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+			navigator.mozGetUserMedia || navigator.msGetUserMedia)
+
+	onFailSoHard: (e) =>
+		console.log('Reeeejected!')
+
+	initVideo: =>
+		if not @hasGetUserMedia()
+			alert('no')
+		window.URL = window.URL || window.webkitURL;
+		navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+			navigator.mozGetUserMedia || navigator.msGetUserMedia;
+		if navigator.getUserMedia
+			navigator.getUserMedia({video: true}, ((localMediaStream) =>
+				my_url = window.webkitURL || window.URL
+				@uis.video.attr('src', my_url.createObjectURL(localMediaStream))
+				# // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
+				# // See crbug.com/110938.
+				@uis.video.get().onloadedmetadata = console.log
+				)
+			, @onFailSoHard)
+		else
+			@uis.video.attr('src', 'somevideo.webm')
+
+	snapshot: =>
 		ctx = canvas.getContext('2d')
-		localMediaStream = null
-		video.addEventListener('click', snapshot, false);
-		#Not showing vendor prefixes or code that works cross-browser.
-		navigator.getUserMedia({video: true}, (stream) =>
-			video.src = window.URL.createObjectURL(stream)
-			localMediaStream = stream
-		, onFailSoHard)
+		if localMediaStream
+			ctx.drawImage(video, 0, 0)
+			# // "image/webp" works in Chrome 18. In other browsers, this will fall back to image/png.
+			uis.image.attr('src', canvas.toDataURL('image/webp'))
 
 	hasGetUserMedia: () =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
+
+class nasa.Navigation extends Widget
+
+	constructor: ->
+		@UIS = {
+			slides	: '.slide'
+			nextButtons : '.next'		
+		}
+
+	bindUI: (ui) =>		
+		super
+		this.init()
+		this.relayout()
+		$(window).on('resize',this.relayout)
+		@uis.nextButtons.each( (idx, el) => 
+			$(el).click(=>
+				console.log "click"
+				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
+				nextSlide = $('.slide[data-position='+nextPos+']')
+				console.log "nextPos "+nextPos+" "+nextSlide.offset().top
+				#$(window).scrollTop(nextSlide.offset().top)
+				$("html, body").animate({ scrollTop: nextSlide.offset().top});
+			)
+		)
+
+	init:() =>
+		slideIdx=0
+		for slide in @uis.slides
+			slide = $(slide)
+			slide.attr('data-position', slideIdx)
+			slideIdx++
+
+
+	relayout:()=>
+		height = $(window).height()
+		@uis.slides.height(height)
+		@uis.slides.width($(window).width())
+		for slide in @uis.slides
+			slide = $(slide)
+			slide.css("top",slide.attr('data-position') * height)
+	
+	goToNextSlide:()=>
+
 
 
 start = ->
     $(window).load ()->
         Widget.bindAll()
-
 # EOF

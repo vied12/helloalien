@@ -19,9 +19,10 @@ div.widget.Navigation data-widget="nasa.Navigation"
 	#bottleme.slide
 
 		#contribForm.widget data-widget="nasa.ContribForm"
-		
 			.avatar
-				video | {##}
+				video autoplay | {##}
+				> img
+				canvas | {##}
 				> input type="file" accept="image/*;capture=camera"
 
 			#imageZone 
