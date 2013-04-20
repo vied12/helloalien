@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
 
-
+div.widget.Navigation data-widget="nasa.Navigation"
 	#intro.slide
-		h1 | Earth in the Botlle 
-		.topo
+		.header
+			h1 | Earth in the Botlle 
+		.topo.left
 			depuis 30 ans..
+		.next.btn-large | Next
 
 	#analyze.slide	
 		p | photos
 		p | sons
 		p | musiques
 		p | langues
+		.next.btn-large | Next
 
 	#bottleme.slide
 
@@ -34,7 +37,8 @@
 					> input type="submit" value="envoyer"
 					.fallback
 						> input.soundFile type="file" name="soundFile"  data-type="sound"
-			
+		.next.btn-large | Next
+
 	#theend.slide
 		.earth
 			{% include 'carte.html' %}
@@ -44,8 +48,8 @@
 			p | bottle 
 
 
-	form method="post" action='/api/upload/sound' enctype='multipart/form-data'
-		> input type='file' name='sound'
-		> input type='submit' value='ok' name='submit'
+		form method="post" action='/api/upload/sound' enctype='multipart/form-data'
+			> input type='file' name='sound'
+			> input type='submit' value='ok' name='submit'
 {% endblock %}
 

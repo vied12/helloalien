@@ -102,5 +102,4 @@ start = ->
     $(window).load ()->
         Widget.bindAll()
 
-start()
 # EOF

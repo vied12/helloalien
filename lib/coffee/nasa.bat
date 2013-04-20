@@ -1,2 +1,3 @@
-coffee -cw ./ C:\Users\Olivier\Documents\GitHub\platinium-records\lib\coffee
-pause 
+coffee -c -b  C:\Users\Olivier\Documents\GitHub\platinium-records\static\js\ ./
+
+pause 	
