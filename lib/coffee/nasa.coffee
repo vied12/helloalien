@@ -15,7 +15,27 @@ URL      = new window.serious.URL()
 Format   = window.serious.format
 Utils    = window.serious.Utils
 
+class nasa.ContribMap extends Widget
+    constructor:() ->
+        @UIS = {
+            cMap: '#sphere'
+        }
+        @ACTIONS = []
+        @MapAPI = null
+
+    bindUI:() =>
+        super
+        $('#sphere').earth3d {
+            texture: '/static/images/earth1024x1024.jpg',
+            dragElement: @ui.find('#locations') 
+        }
+    onMapInitError: (data) =>
+        console.error "An error occured while initliazing google earth: ", data
+
+    onMapInitSuccess: () =>
+
+
 start = ->
 	$(window).load ()->
-		Widget.bindAll()
+        Widget.bindAll()
 # EOF
