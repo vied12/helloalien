@@ -1,5 +1,5 @@
 Flask
-pymongo==2.0.1
+pymongo
 mongokit==0.7.2
 clevercss
 #flask-mail
@@ -8,3 +8,4 @@ fabric
 #python-memcached
 #shove
 pyjade
+embedly
