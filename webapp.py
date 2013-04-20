@@ -26,13 +26,22 @@ def get_collection(collection):
 	db     = client['platinium']
 	return db[collection]
 
+def get_contribution(referer):
+	contributions = get_collection('contributions')
+	contrib       =  contributions.find_one(referer=referer)
+	if not contrib:
+		contributions.insert({"referer":referer, "medias":list()})
+		contrib =  get_contribution(referer)
+	return contrib
+
 def get_referer():
 	if 'referer' in session:
 		referer = session['referer']
 	else:
-		referer = uuid.uuid4()
+		referer = str(uuid.uuid4())
 		session['referer'] = referer
 	return referer
+
 # -----------------------------------------------------------------------------
 #
 # API
@@ -40,7 +49,6 @@ def get_referer():
 # -----------------------------------------------------------------------------
 @app.route('/api/upload/sound', methods=['post'])
 def upload_sound():
-	
 	f     = request.files.get('sound')
 	media = upload_file(f, type='audio', referer=get_referer())
 	return dumps(media)
@@ -57,7 +65,15 @@ def upload_avatar():
 	media = upload_file(f, type='avatar', referer=get_referer())
 	return dumps(media)
 
-def upload_file(f, referer, type='audio'):
+@app.route('/api/userInfos', methods=['post'])
+def user_infos():
+	user_info            = request.form.to_dict()
+	contribution         = get_contribution(get_referer())
+	contribution['user'] = user_info
+	get_collection('contributions').save(contribution)
+	return contribution
+
+def upload_file(f, referer, type):
 	filename = f.filename
 	# save file
 	save_as = os.path.join('uploaded', filename)
@@ -67,14 +83,14 @@ def upload_file(f, referer, type='audio'):
 	obj    = client.oembed('http://instagr.am/p/BL7ti/')
 	meta   = obj.__dict__
 	media  = {
-		'referer' : referer,
 		'type'    : type,
 		'url'     : save_as,
 		'meta'    : meta
 	}
-	medias = get_collection('media')
-	medias.insert(media)
-	return media
+	contrib = get_contribution(referer)
+	contrib['medias'].append(media)
+	get_collection('contributions').save(contrib)
+	return contrib
 
 # -----------------------------------------------------------------------------
 #
