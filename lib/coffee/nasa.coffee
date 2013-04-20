@@ -61,9 +61,9 @@ class nasa.ContribForm extends Widget
 			imageFile 	: ".imageFile"
 			soundZone	: "#soundZone"
 			soundFile 	: ".soundFile"
-			video	: "video"
-			canvas	: "canvas"
-			image	: "img"
+			video	    : "video"
+			canvas	    : "canvas"
+			image	    : "img.avatar"
 		}
 		@cache = {
 			imageZone : null
@@ -109,6 +109,7 @@ class nasa.ContribForm extends Widget
 			@uis.video.attr('src', 'somevideo.webm')
 
 	snapshot: =>
+		console.log('pouet')
 		ctx = @uis.canvas[0].getContext('2d')
 		if @localMediaStream
 			ctx.drawImage(@uis.video[0], 0, 0)

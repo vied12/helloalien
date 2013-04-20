@@ -23,9 +23,9 @@ div.widget.Navigation data-widget="nasa.Navigation"
 
 		#contribForm.widget data-widget="nasa.ContribForm"
 			.avatar
-				video autoplay | {##}
-				> img
-				canvas | {##}
+				video.do autoplay data-action='snapshot' | {##}
+				> img.avatar
+				canvas style="display:none;" | {##}
 				> input.avatarName type="text" name="avatarName" 
 				> input.email type="text" name="email"  
 				> input type="file" accept="image/*;capture=camera"
