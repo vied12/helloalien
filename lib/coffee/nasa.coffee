@@ -26,7 +26,6 @@ class nasa.ContribMap extends Widget
 
     bindUI:() =>
         super
-        console.log "bindUI"
         this.getLastContribs()
         @uis.cMap.earth3d {
             texture: '/static/images/earth1024x1024.jpg',
@@ -34,7 +33,6 @@ class nasa.ContribMap extends Widget
         }
 
     getLastContribs: () =>
-        console.log "getLastContribs()"
         $.ajax
             url: '/api/map'
             type: 'GET'
@@ -73,7 +71,6 @@ class nasa.ContribForm extends Widget
 
 	bindUI: (ui) =>		
 		super
-		console.log "contrib"
 		this.relayout()
 		this.initForm()
 
@@ -81,12 +78,7 @@ class nasa.ContribForm extends Widget
 		console.log "relayout"
 
 	initForm:() =>
-		@cache.imageZone = new Dropzone("div#imageZone", { url: "/api/upload/image"})
-		@cache.soundZone = new Dropzone("div#soundZone", { url: "/api/upload/sound"})
-		#@uis.soundZone.dropzone({ url: "/api/upload/sound" })
-		#@uis.imageZone.dropzone({ url: "/api/upload/image" })	
 		@initVideo()
-
 
 	hasGetUserMedia: =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -115,7 +107,6 @@ class nasa.ContribForm extends Widget
 			@uis.video.attr('src', 'somevideo.webm')
 
 	snapshot: =>
-		console.log(@uis.canvas.get())
 		ctx = @uis.canvas[0].getContext('2d')
 		if @localMediaStream
 			ctx.drawImage(@uis.video[0], 0, 0)
