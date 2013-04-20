@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 html lang="en"
 	head
-		title | Serious-toolkit
+		title | Titanium records
 		> link rel="icon" href="{{url_for('static', filename='images/favicon.ico')}}" type="image/x-icon"
 		> link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'
 		> link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/jquery.jscrollpane.css')}}" media="all"
@@ -11,7 +11,6 @@ html lang="en"
 		> link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/vader/jquery-ui.css" media="all"
 		script type="text/javascript" src="{{url_for('static', filename='js/jquery172.js')}}" | {# #}
 		script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js" | {# #}
-
 
 	body.use-base
 		{% block content %}{% endblock %}
