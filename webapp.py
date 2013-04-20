@@ -70,7 +70,6 @@ def upload_avatar():
 def user_infos():
 	user_info            = request.form.to_dict()
 	# add ip
-	print request.remote_addr
 	user_info['ip']      = request.remote_addr
 	# add coord
 	response, content    = Http().request("http://freegeoip.net/json/%s" % user_info['ip'])
