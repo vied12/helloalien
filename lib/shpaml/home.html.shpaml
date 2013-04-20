@@ -20,8 +20,8 @@ div.widget.Navigation data-widget="nasa.Navigation"
 
 		#contribForm.widget data-widget="nasa.ContribForm"
 			.avatar
-				video autoplay | {##}
-				> img
+				video.do autoplay data-action='snapshot' | {##}
+				<!-- > img -->
 				canvas | {##}
 				> input type="file" accept="image/*;capture=camera"
 

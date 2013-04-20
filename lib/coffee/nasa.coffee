@@ -33,6 +33,8 @@ class nasa.ContribForm extends Widget
 			imageZone : null
 			soundZone : null
 		}
+		@ACTIONS = ['snapshot']
+
 	bindUI: (ui) =>		
 		super
 		this.relayout()
@@ -66,6 +68,7 @@ class nasa.ContribForm extends Widget
 			navigator.getUserMedia({video: true}, ((localMediaStream) =>
 				my_url = window.webkitURL || window.URL
 				@uis.video.attr('src', my_url.createObjectURL(localMediaStream))
+				@localMediaStream = localMediaStream
 				# // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
 				# // See crbug.com/110938.
 				@uis.video.get().onloadedmetadata = console.log
@@ -75,11 +78,12 @@ class nasa.ContribForm extends Widget
 			@uis.video.attr('src', 'somevideo.webm')
 
 	snapshot: =>
-		ctx = canvas.getContext('2d')
-		if localMediaStream
-			ctx.drawImage(video, 0, 0)
+		console.log(@uis.canvas.get())
+		ctx = @uis.canvas[0].getContext('2d')
+		if @localMediaStream
+			ctx.drawImage(@uis.video[0], 0, 0)
 			# // "image/webp" works in Chrome 18. In other browsers, this will fall back to image/png.
-			uis.image.attr('src', canvas.toDataURL('image/webp'))
+			@uis.image.attr('src', @uis.canvas[0].toDataURL('image/webp'))
 
 start = ->
 	$(window).load ()->
