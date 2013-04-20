@@ -23,6 +23,7 @@ body:
 
 .Navigation:
 	overflow: hidden
+	min-width : 778px
 	.slide:
 		width : 100%
 		border : 1px solid #fff

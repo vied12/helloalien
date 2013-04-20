@@ -26,6 +26,7 @@ class nasa.ContribMap extends Widget
 
     bindUI:() =>
         super
+        console.log "bindUI"
         this.getLastContribs()
         @uis.cMap.earth3d {
             texture: '/static/images/earth1024x1024.jpg',
@@ -33,6 +34,7 @@ class nasa.ContribMap extends Widget
         }
 
     getLastContribs: () =>
+        console.log "getLastContribs()"
         $.ajax
             url: '/api/map'
             type: 'GET'
@@ -131,11 +133,8 @@ class nasa.Navigation extends Widget
 		$(window).on('resize',this.relayout)
 		@uis.nextButtons.each( (idx, el) => 
 			$(el).click(=>
-				console.log "click"
 				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
 				nextSlide = $('.slide[data-position='+nextPos+']')
-				console.log "nextPos "+nextPos+" "+nextSlide.offset().top
-				#$(window).scrollTop(nextSlide.offset().top)
 				$("html, body").animate({ scrollTop: nextSlide.offset().top});
 			)
 		)
@@ -147,7 +146,6 @@ class nasa.Navigation extends Widget
 			slide.attr('data-position', slideIdx)
 			slideIdx++
 
-
 	relayout:()=>
 		height = $(window).height()
 		@uis.slides.height(height)
@@ -155,10 +153,6 @@ class nasa.Navigation extends Widget
 		for slide in @uis.slides
 			slide = $(slide)
 			slide.css("top",slide.attr('data-position') * height)
-	
-	goToNextSlide:()=>
-
-
 
 start = ->
     $(window).load ()->
