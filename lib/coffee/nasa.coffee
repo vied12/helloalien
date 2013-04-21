@@ -43,7 +43,6 @@ class nasa.ContribMap extends Widget
             success: @onContribReceived
             error: console.log
 
-
     onContribReceived: (data) => 
         console.log "Received last contribs : ", data 
         
@@ -150,6 +149,7 @@ class nasa.Navigation extends Widget
 		@cache = {
 			activeSlide : 0
 		}
+
 	bindUI: (ui) =>		
 		super
 		this.initPositions()
@@ -160,7 +160,7 @@ class nasa.Navigation extends Widget
 				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
 				nextSlide = $('.slide[data-position='+nextPos+']')
 				$('html,body').animate({ scrollTop: nextSlide.offset().top})
-				activeSlide = nextSlide
+				@cache.activeSlide  = parseInt(nextSlide)
 			)
 		)
 
@@ -176,6 +176,7 @@ class nasa.Navigation extends Widget
 
 	relayout:()=>
 		height = $(window).height()
+		@uis.wrapper.height(height)
 		@uis.slides.height(height)
 		@uis.slides.width($(window).width())		
 		for slide in @uis.slides
@@ -185,6 +186,9 @@ class nasa.Navigation extends Widget
 		$('html,body').scrollTop(@cache.activeSlide * height)
 
 start = ->
-	$(window).load ()->
-		Widget.bindAll()
+    $(window).load ()->
+        Widget.bindAll()
+
+start()
+
 # EOF

@@ -53,6 +53,8 @@ def _scan(folder, dest, action, extension, new_extension=None):
 def _render_coffee(app):	
 	coffee_dir = os.path.join(app.config['LIB_DIR'], 'coffee')
 	dest       = os.path.join(app.static_folder, "js")
+	if os.name == 'nt':
+		return None
 	# delete previous file
 	for path, subdirs, filenames in os.walk(coffee_dir):
 		for coffee_file in filenames:
