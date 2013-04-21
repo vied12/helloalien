@@ -17,11 +17,6 @@ Utils    = window.serious.Utils
 
 class nasa.ContribMap extends Widget
     constructor:() ->
-        @obj1 = {
-            alpha: Math.PI / 4,
-            delta: 0,
-            name: 'location 1'
-        }
         @UIS = {
             cMap: '#sphere'
             locations: '#locations'
@@ -33,24 +28,23 @@ class nasa.ContribMap extends Widget
     bindUI:() =>
         super
         console.log "bindUI"
+        @uis.cMap.earth3d {
+            texture: '/static/images/earth1024x1024.jpg',
+            dragElement: @uis.locations 
+            locationsElement: @uis.locations
+            onCreated: @onMapInitialized
+        }
         this.getLastContribs()
+        @checkUpdate()
 
-    getLastContribs: () =>
-        console.log "getLastContribs()"
-        $.ajax
-            url: '/api/map'
-            type: 'GET'
-            dataType: 'json'
-            success: @onContribReceived
-            error: console.log
-            
-    addLocation: (location, key) =>
-        @map.options.locations[key] = location
-        location.visible = true
-        @map.options.onInitLocation(location, @map)
 
-    onContribReceived: (data) => 
+    simulateBehavior: () =>
         locations = {
+            obj1: {
+                alpha: Math.PI / 4,
+                delta: 0,
+                name: 'location 1'
+            },
             obj2: {
               alpha: 1 * Math.PI / 4,
               delta: -2 * Math.PI / 4,
@@ -67,37 +61,67 @@ class nasa.ContribMap extends Widget
               name: 'location 4'
             }
         }
-        ###
+        timeout = 1000
+        for key, location  of locations
+            do(location, key, self=this, timeout) ->
+                console.log "ok"
+                timeout += 1000
+                window.setTimeout(self.addLocation, timeout, self.MapAPI, location, key)
+
+    getLastContribs: () =>
+        console.log "getLastContribs()"
+        $.ajax
+            url: '/api/map'
+            type: 'GET'
+            dataType: 'json'
+            success: @onContribReceived
+            error: console.log
+
+    addLocation: (map, location, key) =>
+        map.options.locations[key] = location
+        location.visible = true
+        map.options.onInitLocation(location, map)
+
+    createLocation: (contrib) =>
+        lat = Math.round(Math.random() * 3) * Math.PI / 4
+        lng = Math.round(Math.random() * 3) * Math.PI / 4
+        # lng = factor * Math.floor(Math.random * Math.PI / 4 
+        # lat = (Math.round(contrib.user.lat)) * Math.PI / 4  
+        location = {
+            key: contrib._id['$oid']
+            alpha: lng
+            delta: lat
+            name: contrib._id['$oid']
+        }
+
+    checkUpdate: () =>
+        setInterval(@getLastContribs, 2000)
+
+    randomNegative: () =>
+        neg = Math.floor(Math.random())
+        if neg == 0
+            factor = 1
+        else
+            factor = -1 
+        return factor
+
+    onContribReceived: (data) => 
         for contrib in data
             do(self=this, locations, contrib) ->
-                alpha = contrib.user.lnt
-                delta = contrib.user.lat
-                locations[contrib._id['$oid']] = {
-                    alpha: (contrib.user.lng / 100) * Math.PI / 4
-                    delta: (contrib.user.lat / 100) * Math.PI / 4
-                    name: contrib._id['$oid']
-                }
-        console.log locations
-        ###
-        console.log locations
-        console.log @uis.locations
-        @uis.cMap.earth3d {
-            texture: '/static/images/earth1024x1024.jpg',
-            dragElement: @uis.locations 
-            locations: locations
-            locationsElement: @uis.locations
-            onCreated: @onMapInitialized
-        }
-        console.log @uis.locations
+                location = self.createLocation(contrib)
+                if self.locations[location.key] is undefined
+                    self.locations[location.key] = location
+                    self.addLocation(self.MapAPI, location, location.key)
 
+        console.log locations
         console.log "Received last contribs : ", data 
         
     onMapInitError: (data) =>
         console.error "An error occured while initliazing google earth: ", data
 
     onMapInitialized: (mapInstance) =>
-        console.log "onMapInitialized(", mapInstance, ")"
-        @map = mapInstance
+        @MapAPI = mapInstance
+        # @simulateBehavior()
 
 
 class nasa.ContribForm extends Widget
@@ -247,7 +271,7 @@ class nasa.Navigation extends Widget
 				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
 				nextSlide = $('.slide[data-position='+nextPos+']')
 				$('html,body').animate({ scrollTop: nextSlide.offset().top})
-				@cache.activeSlide  = parseInt(nextSlide)
+				@cache.activeSlide  = parseInt(nextPos)
 			)
 		)
 
@@ -262,13 +286,14 @@ class nasa.Navigation extends Widget
 			slideIdx++
 
 	relayout:()=>
-		height = $(window).height()
-		@uis.wrapper.height(height)
+		height = $(window).height()		
 		@uis.slides.height(height)
+		@ui.find('.autoHeight').height(height)
 		@uis.slides.width($(window).width())		
 		for slide in @uis.slides
 			slide = $(slide)
 			slide.css("top",slide.attr('data-position') * height)
+		console.log "@cache.activeSlide="+@cache.activeSlide
 		activeSlide = @ui.find('.slide[data-position='+@cache.activeSlide+']')
 		$('html,body').scrollTop(@cache.activeSlide * height)
 
