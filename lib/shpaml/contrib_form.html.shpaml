@@ -13,5 +13,4 @@
 			label for="id_sound"
 				> input.soundFile#id_sound type="file" name="soundFile"  data-type="sound
 		.clearfix | {# #}
-		.next
-			Next
+		.next | {# #}
