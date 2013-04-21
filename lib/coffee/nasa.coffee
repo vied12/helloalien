@@ -123,6 +123,7 @@ class nasa.ContribForm extends Widget
 	constructor: ->
 		@UIS = {
 			form	: "form"			
+			okZone      : '.next'
 			imageZone 	: "#imageZone"
 			imageFile 	: "#id_image"
 			soundZone	: "#soundZone"
@@ -131,6 +132,7 @@ class nasa.ContribForm extends Widget
 			canvas	    : "canvas"
 			image	    : "img.avatar"
 			formHolder  : '.contrib-form-background'
+
 		}
 		@cache = {
 			imageZone : null
@@ -160,6 +162,8 @@ class nasa.ContribForm extends Widget
 	bindFields: =>
 		@uis.imageZone.hover(@imageHovered, @imageUnhovered) 
 		@uis.soundZone.hover(@soundHovered, @soundUnhovered) 
+		@uis.okZone.hover(@okHovered, @okUnhovered) 
+
 		@uis.imageFile.change @sendImage
 		@uis.soundFile.change @sendSound
 
@@ -174,6 +178,12 @@ class nasa.ContribForm extends Widget
 
 	soundUnhovered: =>
 		@uis.formHolder.removeClass 'sound-hovered'
+
+	okHovered: =>
+		@uis.formHolder.addClass 'ok-hovered'
+
+	okUnhovered: =>
+		@uis.formHolder.removeClass 'ok-hovered'
 
 
 	hasGetUserMedia: =>
@@ -228,21 +238,6 @@ class nasa.ContribForm extends Widget
 	hasGetUserMedia: () =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
 
-	updateFormPicture: () =>
-		if @cache.imageUploaded and @cache.soundUploaded
-			formImageClass = "image-and-sound-uploaded"
-		else
-			if @cache.imageUploaded
-				formImageClass = "image-uploaded"
-			if @cache.soundUploaded
-				formImageClass = "sound-uploaded"
-
-		
-		@uis.formHolder.removeClass "image-uploaded"
-		@uis.formHolder.removeClass "sound-uploaded"
-		@uis.formHolder.addClass formImageClass
-	
-
 	sendImage: =>
 		@sendMedia('picture', @uis.imageFile)
 
@@ -274,7 +269,6 @@ class nasa.ContribForm extends Widget
 				@cache.imageUploaded = true
 			if media.type = 'audio'
 				@cache.soundUploaded = true
-		@updateFormPicture() 
 
 
 
