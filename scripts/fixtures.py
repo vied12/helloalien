@@ -6,7 +6,7 @@ app.config.from_pyfile("../settings.cfg")
 
 def get_collection(collection):
 	client = MongoClient(app.config['MONGO_HOST'])
-	db     = client['platinium']
+	db     = client[app.config['MONGO_DB']]
 	return db[collection]
 
 cs = get_collection('contributions')
