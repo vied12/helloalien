@@ -51,7 +51,7 @@ body:
 
 .Navigation:
 	.wrapper:
-		width : 950px
+		width : 980px
 		background-image: url(/static/images/shadow_left.png), url(/static/images/shadow_right.png), url(/static/images/bg.png)
 		background-repeat :  repeat-y, repeat-y,repeat
 		background-position : top left, top right, top left
@@ -64,25 +64,23 @@ body:
 		left : 0
 		overflow:scroll
 		.wrapper :
-			max-width : 950px
+			max-width : 980px
 			margin : auto
 	.next:
 		position : absolute
 		bottom : 60px
 		left : 48%
 		margin : auto
-		background-color : #222
-		color : white
 		cursor : pointer
 		padding : 10px
 		border-radius : 5px
 
 #intro:
 	color : #222
-	height : 2000px
+	height : 3000px
 	.wrapper:
 		position: relative
-		height : 2000px
+		height : 3000px
 	img :
 		position : absolute
 	#solarsystem:
@@ -100,7 +98,16 @@ body:
 		z-index: 0;
 	#paragraph2:
 		top: 622px;
-		left: 50px;
+		left: 50px;		
+	#img_2:
+		top: 561px;
+		left: 89px;
+	#img_3:
+		top: 1278px;
+		left: 0px;
+	#img_4:
+		top: 1860px;
+		left: 16px;
 	.header:
 		text-align :center
 		#logo:
@@ -108,6 +115,18 @@ body:
 			position : relative
 #analyze:
 	color : $TEXT_COLOR
+
+.uploadField:
+	input[type="file"]:
+		opacity:0
+	label:
+		background-color: black
+		width: 300px
+		height: 100px
+		display: block
+		color: white
+		&:hover:
+			cursor: pointer
 
 .ContribMap:
 	#contrib-map:

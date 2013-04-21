@@ -16,106 +16,106 @@ Format   = window.serious.format
 Utils    = window.serious.Utils
 
 class nasa.ContribMap extends Widget
-    constructor:() ->
-        @UIS = {
-            cMap: '#sphere'
-            locations: '#locations'
-        }
-        @ACTIONS = []
-        @MapAPI = null
-        @locations = {}
+	constructor:() ->
+		@UIS = {
+			cMap: '#sphere'
+			locations: '#locations'
+		}
+		@ACTIONS = []
+		@MapAPI = null
+		@locations = {}
 
-    bindUI:() =>
-        super
-        @uis.cMap.earth3d {
-            texture: '/static/images/earth1024x1024.jpg',
-            dragElement: @uis.locations 
-            locationsElement: @uis.locations
-            onCreated: @onMapInitialized
-        }
-        this.getLastContribs()
-        @checkUpdate()
+	bindUI:() =>
+		super
+		@uis.cMap.earth3d {
+			texture: '/static/images/earth1024x1024.jpg',
+			dragElement: @uis.locations 
+			locationsElement: @uis.locations
+			onCreated: @onMapInitialized
+		}
+		this.getLastContribs()
+		@checkUpdate()
 
 
-    simulateBehavior: () =>
-        locations = {
-            obj1: {
-                alpha: Math.PI / 4,
-                delta: 0,
-                name: 'location 1'
-            },
-            obj2: {
-              alpha: 1 * Math.PI / 4,
-              delta: -2 * Math.PI / 4,
-              name: 'location 2'
-            },
-            obj3: {
-              alpha: 2 * Math.PI / 4,
-              delta: 0,
-              name: 'location 3'
-            },
-            obj4: {
-              alpha: 3 * Math.PI / 4,
-              delta: 3 * Math.PI / 4,
-              name: 'location 4'
-            }
-        }
-        timeout = 1000
-        for key, location  of locations
-            do(location, key, self=this, timeout) ->
-                timeout += 1000
-                window.setTimeout(self.addLocation, timeout, self.MapAPI, location, key)
+	simulateBehavior: () =>
+		locations = {
+			obj1: {
+				alpha: Math.PI / 4,
+				delta: 0,
+				name: 'location 1'
+			},
+			obj2: {
+			  alpha: 1 * Math.PI / 4,
+			  delta: -2 * Math.PI / 4,
+			  name: 'location 2'
+			},
+			obj3: {
+			  alpha: 2 * Math.PI / 4,
+			  delta: 0,
+			  name: 'location 3'
+			},
+			obj4: {
+			  alpha: 3 * Math.PI / 4,
+			  delta: 3 * Math.PI / 4,
+			  name: 'location 4'
+			}
+		}
+		timeout = 1000
+		for key, location  of locations
+			do(location, key, self=this, timeout) ->
+				timeout += 1000
+				window.setTimeout(self.addLocation, timeout, self.MapAPI, location, key)
 
-    getLastContribs: () =>
-        $.ajax
-            url: '/api/map'
-            type: 'GET'
-            dataType: 'json'
-            success: @onContribReceived
-            error: console.log
+	getLastContribs: () =>
+		$.ajax
+			url: '/api/map'
+			type: 'GET'
+			dataType: 'json'
+			success: @onContribReceived
+			error: console.log
 
-    addLocation: (map, location, key) =>
-        map.options.locations[key] = location
-        location.visible = true
-        map.options.onInitLocation(location, map)
+	addLocation: (map, location, key) =>
+		map.options.locations[key] = location
+		location.visible = true
+		map.options.onInitLocation(location, map)
 
-    createLocation: (contrib) =>
-        lat = Math.round(Math.random() * 3) * Math.PI / 4
-        lng = Math.round(Math.random() * 3) * Math.PI / 4
-        # lng = factor * Math.floor(Math.random * Math.PI / 4 
-        # lat = (Math.round(contrib.user.lat)) * Math.PI / 4  
-        location = {
-            key: contrib._id['$oid']
-            alpha: lng
-            delta: lat
-            name: contrib._id['$oid']
-        }
+	createLocation: (contrib) =>
+		lat = Math.round(Math.random() * 3) * Math.PI / 4
+		lng = Math.round(Math.random() * 3) * Math.PI / 4
+		# lng = factor * Math.floor(Math.random * Math.PI / 4 
+		# lat = (Math.round(contrib.user.lat)) * Math.PI / 4  
+		location = {
+			key: contrib._id['$oid']
+			alpha: lng
+			delta: lat
+			name: contrib._id['$oid']
+		}
 
-    checkUpdate: () =>
-        setInterval(@getLastContribs, 2000)
+	checkUpdate: () =>
+		# setInterval(@getLastContribs, 2000)
 
-    randomNegative: () =>
-        neg = Math.floor(Math.random())
-        if neg == 0
-            factor = 1
-        else
-            factor = -1 
-        return factor
+	randomNegative: () =>
+		neg = Math.floor(Math.random())
+		if neg == 0
+			factor = 1
+		else
+			factor = -1 
+		return factor
 
-    onContribReceived: (data) => 
-        for contrib in data
-            do(self=this, locations, contrib) ->
-                location = self.createLocation(contrib)
-                if self.locations[location.key] is undefined
-                    self.locations[location.key] = location
-                    self.addLocation(self.MapAPI, location, location.key)
-        
-    onMapInitError: (data) =>
-        console.error "An error occured while initliazing google earth: ", data
+	onContribReceived: (data) => 
+		for contrib in data
+			do(self=this, locations, contrib) ->
+				location = self.createLocation(contrib)
+				if self.locations[location.key] is undefined
+					self.locations[location.key] = location
+					self.addLocation(self.MapAPI, location, location.key)
+		
+	onMapInitError: (data) =>
+		console.error "An error occured while initliazing google earth: ", data
 
-    onMapInitialized: (mapInstance) =>
-        @MapAPI = mapInstance
-        # @simulateBehavior()
+	onMapInitialized: (mapInstance) =>
+		@MapAPI = mapInstance
+		# @simulateBehavior()
 
 
 class nasa.ContribForm extends Widget
@@ -124,11 +124,9 @@ class nasa.ContribForm extends Widget
 		@UIS = {
 			form	: "form"			
 			imageZone 	: "#imageZone"
-			imageFile 	: ".imageFile"
-			imageLink 	: ".imageLink"
+			imageFile 	: "#id_image"
 			soundZone	: "#soundZone"
-			soundFile 	: ".soundFile"
-			soundLink 	: ".soundLink"
+			soundFile 	: "#id_sound"
 			video	    : "video"
 			canvas	    : "canvas"
 			image	    : "img.avatar"
@@ -141,13 +139,16 @@ class nasa.ContribForm extends Widget
 
 	bindUI: (ui) =>
 		super
-		this.relayout()
 		this.initForm()
 
-	relayout:()=>
-
-	initForm:() =>
+	initForm: =>
 		@initVideo()
+		@bindFields()
+
+	bindFields: =>
+		@uis.imageFile.change @sendImage
+		@uis.soundFile.change @sendSound
+
 
 	hasGetUserMedia: =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -202,45 +203,28 @@ class nasa.ContribForm extends Widget
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
 
 	sendImage: =>
-		if @uis.imageLink.val() != ""
-			@sendMedia('picture', @uis.imageLink.val())
-		else
-			@sendMedia('picture', @uis.imageFile, true)
+		@sendMedia('picture', @uis.imageFile)
 
 	sendSound: =>
-		if @uis.soundLink.val() != ""
-			@sendMedia('audio', @uis.soundLink.val())
-		else
-			@sendMedia('audio', @uis.soundFile, true)
+		@sendMedia('audio', @uis.soundFile)
 
-	sendMedia: (type, value, bin=false) =>
-		if not bin
-			data = {
-				type : type
-				value: value
-			}
-			$.ajax
-				url         : "/api/media"
-				type       	: 'POST'
-				data       	: data
-				dataType   	: 'json'
-		else
-			# we create a local form
-			$form = $("<form enctype=\"multipart/form-data\"></form>")
-			# $form.append @uis.fileInputField.clone(true, true)
-			form =  new FormData $form[0]
-			form.append type, value.prop("files")[0]
-			# We send the data throw ajax
-			$.ajax
-				url         : "/api/upload/#{type}"
-				type        : 'POST'
-				success     : console.log
-				error       : not console or console.log
-				data        : form
-				cache       : false
-				contentType : false
-				processData : false
-				xhr         : -> $.ajaxSettings.xhr()
+	sendMedia: (type, value) =>
+		# we create a local form
+		$form = $("<form enctype=\"multipart/form-data\"></form>")
+		# $form.append @uis.fileInputField.clone(true, true)
+		form =  new FormData $form[0]
+		form.append type, value.prop("files")[0]
+		# We send the data throw ajax
+		$.ajax
+			url         : "/api/upload/#{type}"
+			type        : 'POST'
+			success     : console.log
+			error       : not console or console.log
+			data        : form
+			cache       : false
+			contentType : false
+			processData : false
+			xhr         : -> $.ajaxSettings.xhr()
 
 class nasa.Navigation extends Widget
 
@@ -279,7 +263,7 @@ class nasa.Navigation extends Widget
 			slideIdx++
 
 	relayout:()=>
-		height = $(window).height()		
+		height = $(window).height()	
 		@uis.slides.height(height)
 		@ui.find('.autoHeight').height(height)
 		@uis.slides.width($(window).width())		
@@ -321,8 +305,8 @@ class nasa.ImageSlider extends Widget
 			setTimeout(@start, 1000)
 
 start = ->
-    $(window).load ()->
-        Widget.bindAll()
+	$(window).load ()->
+		Widget.bindAll()
 
 start()
 
