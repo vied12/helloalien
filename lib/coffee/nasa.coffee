@@ -16,40 +16,40 @@ Format   = window.serious.format
 Utils    = window.serious.Utils
 
 class nasa.ContribMap extends Widget
-    constructor:() ->
-        @UIS = {
-            cMap: '#sphere'
-        }
-        @ACTIONS = []
-        @MapAPI = null
-        @locations = {}
+	constructor:() ->
+		@UIS = {
+			cMap: '#sphere'
+		}
+		@ACTIONS = []
+		@MapAPI = null
+		@locations = {}
 
-    bindUI:() =>
-        super
-        console.log "bindUI"
-        this.getLastContribs()
-        @uis.cMap.earth3d {
-            texture: '/static/images/earth1024x1024.jpg',
-            dragElement: $('#locations') 
-        }
+	bindUI:() =>
+		super
+		console.log "bindUI"
+		this.getLastContribs()
+		@uis.cMap.earth3d {
+			texture: '/static/images/earth1024x1024.jpg',
+			dragElement: $('#locations') 
+		}
 
-    getLastContribs: () =>
-        console.log "getLastContribs()"
-        $.ajax
-            url: '/api/map'
-            type: 'GET'
-            dataType: 'json'
-            success: @onContribReceived
-            error: console.log
+	getLastContribs: () =>
+		console.log "getLastContribs()"
+		$.ajax
+			url: '/api/map'
+			type: 'GET'
+			dataType: 'json'
+			success: @onContribReceived
+			error: console.log
 
 
-    onContribReceived: (data) => 
-        console.log "Received last contribs : ", data 
-        
-    onMapInitError: (data) =>
-        console.error "An error occured while initliazing google earth: ", data
+	onContribReceived: (data) => 
+		console.log "Received last contribs : ", data 
+		
+	onMapInitError: (data) =>
+		console.error "An error occured while initliazing google earth: ", data
 
-    onMapInitSuccess: () =>
+	onMapInitSuccess: () =>
 
 
 class nasa.ContribForm extends Widget
@@ -116,6 +116,30 @@ class nasa.ContribForm extends Widget
 			# // "image/webp" works in Chrome 18. In other browsers, this will fall back to image/png.
 			@uis.image.attr('src', @uis.canvas[0].toDataURL('image/webp'))
 
+
+			# we create a local form
+			$form = $("<form enctype=\"multipart/form-data\"></form>")
+			# $form.append @uis.fileInputField.clone(true, true)
+			form =  new FormData $form[0]
+			form.append "avatar", @uis.canvas[0].toDataURL('image/webp')
+
+			# We send the data throw ajax
+			$.ajax
+				url         : "/api/upload/avatar"
+				type        : 'POST'
+				success     : console.log
+				error       : not console or console.log
+				data        : form
+				cache       : false
+				contentType : false
+				processData : false
+				xhr         : -> $.ajaxSettings.xhr()
+		# $.ajax
+		# 	type: "POST"
+		# 	url: "/api/upload/avatar"
+		# 	data:
+		# 		imgBase64: @uis.canvas[0].toDataURL('image/webp')
+
 	hasGetUserMedia: () =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
 
@@ -156,6 +180,6 @@ class nasa.Navigation extends Widget
 			slide.css("top",slide.attr('data-position') * height)
 
 start = ->
-    $(window).load ()->
-        Widget.bindAll()
+	$(window).load ()->
+		Widget.bindAll()
 # EOF

@@ -25,7 +25,7 @@ div.widget.Navigation data-widget="nasa.Navigation"
 			.avatar
 				video.do autoplay data-action='snapshot' | {##}
 				> img.avatar
-				canvas style="display:none;" | {##}
+				canvas style="display:none;" width=680 height=480 | {##}
 				> input.avatarName type="text" name="avatarName" 
 				> input.email type="text" name="email"  
 				> input type="file" accept="image/*;capture=camera"
@@ -47,7 +47,7 @@ div.widget.Navigation data-widget="nasa.Navigation"
 
 	#theend.slide
 		.earth
-			{% include 'carte.html' %}
+			<!-- {% include 'carte.html' %} -->
 		.radio
 			p | RADIO PLAYER playlist
 		.don
