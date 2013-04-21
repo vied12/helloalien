@@ -43,7 +43,7 @@ class nasa.ContribMap extends Widget
             dataType: 'json'
             success: @onContribReceived
             error: console.log
-            
+
     addLocation: (location, key) =>
         @map.options.locations[key] = location
         location.visible = true
@@ -247,7 +247,7 @@ class nasa.Navigation extends Widget
 				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
 				nextSlide = $('.slide[data-position='+nextPos+']')
 				$('html,body').animate({ scrollTop: nextSlide.offset().top})
-				@cache.activeSlide  = parseInt(nextSlide)
+				@cache.activeSlide  = parseInt(nextPos)
 			)
 		)
 
@@ -262,13 +262,14 @@ class nasa.Navigation extends Widget
 			slideIdx++
 
 	relayout:()=>
-		height = $(window).height()
-		@uis.wrapper.height(height)
+		height = $(window).height()		
 		@uis.slides.height(height)
+		@ui.find('.autoHeight').height(height)
 		@uis.slides.width($(window).width())		
 		for slide in @uis.slides
 			slide = $(slide)
 			slide.css("top",slide.attr('data-position') * height)
+		console.log "@cache.activeSlide="+@cache.activeSlide
 		activeSlide = @ui.find('.slide[data-position='+@cache.activeSlide+']')
 		$('html,body').scrollTop(@cache.activeSlide * height)
 

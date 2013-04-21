@@ -12,10 +12,8 @@ div.widget.Navigation data-widget="nasa.Navigation"
 				> img#paragraph2 src="/static/images/paragraph2.png"
 				.header
 					> img#logo src="/static/images/logo.png" title="Hello Alien!"
-				.next.btn-large | Next
+				
 
-		#analyze.slide	
-			.wrapper
 				p | photos
 				p | sons
 				p | musiques
@@ -23,7 +21,7 @@ div.widget.Navigation data-widget="nasa.Navigation"
 				.next.btn-large | Next
 
 		#bottleme.slide
-			.wrapper
+			.wrapper.autoHeight
 				#contribForm.widget data-widget="nasa.ContribForm"
 					.avatar
 						video.do autoplay data-action='snapshot' | {##}
@@ -48,7 +46,7 @@ div.widget.Navigation data-widget="nasa.Navigation"
 				.next.btn-large | Next
 
 		#theend.slide
-			.wrapper
+			.wrapper.autoHeight
 				.earth
 					{% include 'carte.html' %}
 				.radio

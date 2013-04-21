@@ -33,6 +33,7 @@ body:
 		border : 1px solid #fff
 		position : absolute
 		left : 0
+		overflow:scroll
 		.wrapper :
 			max-width : 950px
 			margin : auto
@@ -49,8 +50,10 @@ body:
 
 #intro:
 	color : #222
+	height : 2000px
 	.wrapper:
 		position: relative
+		height : 2000px
 	img :
 		position : absolute
 	#solarsystem:
@@ -112,6 +115,8 @@ body:
 				height: 20px
 
 #bottleme:
+	.wrapper:
+		height : 950px
 	#imageZone:
 		margin: 30px 0;
 		-webkit-box-shadow: 0 0 50px rgba(0,0,0,0.13);
@@ -119,10 +124,10 @@ body:
 		padding: 4px;
 		-webkit-border-radius: 3px;
 		border-radius: 3px;
+
 #theend:
 	.earth:
 		position : relative
-		text-align : center
 		width: 100%;
 		.ContribMap:
 			#contrib-map:
