@@ -132,10 +132,13 @@ class nasa.ContribForm extends Widget
 			video	    : "video"
 			canvas	    : "canvas"
 			image	    : "img.avatar"
+			formHolder  : '.contrib-form-background'
 		}
 		@cache = {
 			imageZone : null
 			soundZone : null
+			uploadedImage: null
+			uploadedSound: null
 		}
 		@ACTIONS = ['snapshot', 'sendImage', 'sendSound']
 
@@ -204,6 +207,20 @@ class nasa.ContribForm extends Widget
 	hasGetUserMedia: () =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
 
+	updateFormPicture: () =>
+		if @cache.imageUploaded and @cache.soundUploaded
+			formImageClass = "image-and-sound-uploaded"
+		else
+			if @cache.imageUploaded
+				formImageClass = "image-uploaded"
+			if @cache.soundUploaded
+				formImageClass = "sound-uploaded"
+
+		@uis.formHolder.removeClass((index, klass) -> 
+				if index > 0 
+					return klass
+			)
+		@uis.formHolder.addClass formImageClass
 	sendImage: =>
 		@sendMedia('picture', @uis.imageFile)
 
@@ -220,13 +237,22 @@ class nasa.ContribForm extends Widget
 		$.ajax
 			url         : "/api/upload/#{type}"
 			type        : 'POST'
-			success     : console.log
+			success     : @onMediaSent
 			error       : not console or console.log
 			data        : form
 			cache       : false
 			contentType : false
 			processData : false
 			xhr         : -> $.ajaxSettings.xhr()
+
+	onMediaSent: (data) =>
+		for media in data.medias
+			if media.type = 'picture'
+				@cache.uplaodedPicture = media
+
+		@updateFormPicture() 
+
+
 
 class nasa.Navigation extends Widget
 
