@@ -1,0 +1,16 @@
+#contribForm.ContribForm.widget data-widget="nasa.ContribForm"
+	.avatar
+		video.do autoplay data-action='snapshot' | {##}
+		> img.avatar
+		canvas style="display:none;" | {##}
+		> input type="file" accept="image/*;capture=camera"
+	.contrib-form-background
+		#imageZone.uploadField.pull-left
+			label for="id_image"
+				Image
+				> input#id_image type="file" name="imageFile" data-type="image"
+
+		#soundZone.uploadField.pull-right
+				label for="id_sound"
+					Son
+					> input.soundFile#id_sound type="file" name="soundFile"  data-type="sound"
