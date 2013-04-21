@@ -109,6 +109,18 @@ body:
 #analyze:
 	color : $TEXT_COLOR
 
+.uploadField:
+	input[type="file"]:
+		opacity:0
+	label:
+		background-color: black
+		width: 300px
+		height: 100px
+		display: block
+		color: white
+		&:hover:
+			cursor: pointer
+
 .ContribMap:
 	#contrib-map:
 		display: inline-block;
