@@ -1,9 +1,12 @@
 from pymongo import MongoClient
 import uuid
+from flask import Flask
+app       = Flask(__name__)
+app.config.from_pyfile("../settings.cfg")
 
 def get_collection(collection):
-	client = MongoClient()
-	db     = client['platinium']
+	client = MongoClient(app.config['MONGO_HOST'])
+	db     = client[app.config['MONGO_DB']]
 	return db[collection]
 
 cs = get_collection('contributions')
