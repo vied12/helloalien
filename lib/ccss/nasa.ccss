@@ -85,11 +85,13 @@ body:
 			background-image: url(/static/images/formulaire4.png)
 
 		.next:
+			margin: auto
 			position: relative
 			width: 100px
-			height: 20px
+			height: 60px
 			bottom: auto
 			left: auto
+			cursor: pointer
 
 
 
