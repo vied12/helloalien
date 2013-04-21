@@ -25,7 +25,7 @@ div.widget.Navigation data-widget="nasa.Navigation"
 			.wrapper.autoHeight
 				#contribForm.widget data-widget="nasa.ContribForm"
 					.avatar
-						video.do width="300" height="300" autoplay data-action='snapshot' | {##}
+						video.do.hidden width="300" height="300" autoplay data-action='snapshot' | {##}
 						> img.avatar.hidden
 						canvas  width="600" height="400" style="display:none;" | {##}
 						> input.avatarName type="text" name="avatarName" 
