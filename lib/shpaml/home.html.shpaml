@@ -10,15 +10,12 @@ div.widget.Navigation data-widget="nasa.Navigation"
 				> img#voyager src="/static/images/voyager.png"
 				> img#paragraph1 src="/static/images/paragraph1.png"
 				> img#paragraph2 src="/static/images/paragraph2.png"
+				> img#img_2 src="/static/images/img_2.png"
+				> img#img_3 src="/static/images/img_3.png"
+				> img#img_4 src="/static/images/img_4.png"
 				.header
 					> img#logo src="/static/images/logo.png" title="Hello Alien!"
-				
-
-				p | photos
-				p | sons
-				p | musiques
-				p | langues
-				.next.btn-large | Next
+				> img.next src="/static/images/next.png" 
 
 		#bottleme.slide
 			.wrapper.autoHeight
@@ -50,8 +47,6 @@ div.widget.Navigation data-widget="nasa.Navigation"
 					p | RADIO PLAYER playlist
 				.don
 					p | bottle 
-				.footer
-
 
 {% endblock %}
 

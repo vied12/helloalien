@@ -265,7 +265,7 @@ class nasa.Navigation extends Widget
 			slideIdx++
 
 	relayout:()=>
-		height = $(window).height()		
+		height = $(window).height()	
 		@uis.slides.height(height)
 		@ui.find('.autoHeight').height(height)
 		@uis.slides.width($(window).width())		
