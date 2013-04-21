@@ -3,7 +3,7 @@
 		video.do autoplay data-action='snapshot' | {##}
 		> img.avatar
 		canvas style="display:none;" | {##}
-		> input type="file" accept="image/*;capture=camera"
+		> input type="file" style='display: none' accept="image/*;capture=camera"
 	.contrib-form-background
 		#imageZone.uploadField.pull-left
 			label for="id_image"
