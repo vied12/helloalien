@@ -7,7 +7,8 @@ def deploy():
 	local('git merge master')
 	local('rm static/.gitignore -f')
 	local('rm templates/.gitignore -f')
-	local('git add -u .')
+	local('git checkout master')
+	# local('git add -u .')
 	# local('git commit -m "updated"')
 	local('git push heroku deployed:master')
 	# code_dir = '/home/sites/helloalien'
