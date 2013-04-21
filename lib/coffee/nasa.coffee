@@ -182,6 +182,7 @@ class nasa.ContribForm extends Widget
 			ctx.drawImage(@uis.video[0], 0, 0)
 			# // "image/webp" works in Chrome 18. In other browsers, this will fall back to image/png.
 			@uis.image.attr('src', @uis.canvas[0].toDataURL('image/webp'))
+			@uis.image.removeClass "hidden"
 			# we create a local form
 			$form = $("<form enctype=\"multipart/form-data\"></form>")
 			# $form.append @uis.fileInputField.clone(true, true)

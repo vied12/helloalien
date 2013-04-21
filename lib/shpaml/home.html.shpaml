@@ -13,6 +13,7 @@ div.widget.Navigation data-widget="nasa.Navigation"
 				> img#img_2 src="/static/images/img_2.png"
 				> img#img_3 src="/static/images/img_3.png"
 				> img#img_4 src="/static/images/img_4.png"
+				> img#img_5 src="/static/images/img_5.png"
 				.header
 					> img#logo src="/static/images/logo.png" title="Hello Alien!"
 				> img.next src="/static/images/next.png" 
@@ -37,7 +38,7 @@ div.widget.Navigation data-widget="nasa.Navigation"
 							label for="id_sound"
 								Son
 								> input.soundFile#id_sound type="file" name="soundFile"  data-type="sound"
-				.next.btn-large | Next
+				> img.next src="/static/images/go.png" 
 
 		#theend.slide
 			.wrapper.autoHeight
