@@ -23,6 +23,7 @@ div.widget.Navigation data-widget="nasa.Navigation"
 
 		#bottleme.slide
 			.wrapper.autoHeight
+<<<<<<< HEAD
 				#contribForm.widget data-widget="nasa.ContribForm"
 					.avatar
 						video.do.hidden width="300" height="300" autoplay data-action='snapshot' | {##}
@@ -43,6 +44,9 @@ div.widget.Navigation data-widget="nasa.Navigation"
 								Son
 								> input.soundFile#id_sound type="file" name="soundFile"  data-type="sound"
 				> img.next src="/static/images/ok.png" 
+=======
+				{% include 'contrib_form.html' %}
+>>>>>>> 56018956e0bc07e14cfe5a945086d4bffd830274
 
 		#theend.slide
 			.wrapper.autoHeight

@@ -28,12 +28,22 @@
     -moz-animation-duration:1s
     animation-duration:1s
 
+.clearfix:before, .clearfix:after:
+	display:table
+	line-height:0
+	content: "' '"
+
+.clearfix:after:
+	clear:both
+
 TEXT_COLOR  = #222
 TILE_BRAND_COLOR        = "rgba(10,12,6,0.7)"
 ALTERNATE_FONT = Verdana, sans-serif
-
+SPRITE_ELEM_WIDTH = 450px
+SPRITE_ELEM_HEIGHT = 500px
+FORM_NEXT_HEIGHT = 50px
 body:
-	font-family: 'Ubuntu', sans-serif;
+	font-family: 'Ubuntu', sans-serif
 	background-color 	: #F2F2F2
 	color   : $TEXT_COLOR
 	overflow : hidden
@@ -46,10 +56,49 @@ body:
 		user-select 			: none
 
 .ContribForm:
+	width: 100%
+	.uploadField:
+		width: 225px
+		input[type="file"]:
+			opacity:0
+			width: 1px
+		label:
+			height: 450px
+			display: block
+			&:hover:
+				cursor: pointer
 	color   : $TEXT_COLOR
 	padding : 20px 0 0 0px
+	.contrib-form-background:
+		#imageZone:
+			margin-left: 200px
+		background-image: url(/static/images/formulaire1.png)
+		background-repeat: no-repeat
+		width: 780px
+		height: 520px
+		margin: auto
+		&.image-hovered:
+			background-image: url(/static/images/formulaire2.png)
+		&.sound-hovered:
+			background-image: url(/static/images/formulaire3.png)
+		&.ok-hovered:
+			background-image: url(/static/images/formulaire4.png)
+
+		.next:
+			position: relative
+			width: 100px
+			height: 20px
+			bottom: auto
+			left: auto
 
 
+
+.pull-right:
+	float: right
+
+.pull-left:
+	float: left 
+	
 .Navigation:
 	.wrapper:
 		width : 980px
@@ -129,18 +178,6 @@ body:
 #analyze:
 	color : $TEXT_COLOR
 
-.uploadField:
-	input[type="file"]:
-		opacity:0
-	label:
-		background-color: black
-		width: 300px
-		height: 100px
-		display: block
-		color: white
-		&:hover:
-			cursor: pointer
-
 .ContribMap:
 	#contrib-map:
 		display: inline-block;
@@ -178,20 +215,6 @@ body:
 #bottleme:
 	.wrapper:
 		height : 950px
-	#imageZone:
-		margin: 30px 0;
-		-webkit-box-shadow: 0 0 50px rgba(0,0,0,0.13);
-		box-shadow: 0 0 50px rgba(0,0,0,0.13);
-		padding: 4px;
-		-webkit-border-radius: 3px;
-		border-radius: 3px;
-	.avatar:
-		video,img : 
-			position : absolute
-			top : 0 
-			left : 0
-			width : 200px
-			height :140px
 
 #theend:
 	.wrapper:

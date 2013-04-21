@@ -123,6 +123,7 @@ class nasa.ContribForm extends Widget
 	constructor: ->
 		@UIS = {
 			form	: "form"			
+			okZone      : '.next'
 			imageZone 	: "#imageZone"
 			imageFile 	: "#id_image"
 			soundZone	: "#soundZone"
@@ -130,24 +131,59 @@ class nasa.ContribForm extends Widget
 			video	    : "video"
 			canvas	    : "canvas"
 			image	    : "img.avatar"
+			formHolder  : '.contrib-form-background'
+
 		}
 		@cache = {
 			imageZone : null
 			soundZone : null
+			uploadedImage: false
+			uploadedSound: false
 		}
 		@ACTIONS = ['snapshot', 'sendImage', 'sendSound']
 
 	bindUI: (ui) =>
 		super
 		this.initForm()
+		@ffTweak()
+	
+	ffTweak: () =>
+		if $.browser.mozilla
+			@ui.find('.uploadField label').bind 'click', (e) -> 
+				elem = e.target()
+				e.stopPropagation()
+				id = $(elem).attr('for')
+				$("input##{id}").click()
 
 	initForm: =>
 		@initVideo()
 		@bindFields()
 
 	bindFields: =>
+		@uis.imageZone.hover(@imageHovered, @imageUnhovered) 
+		@uis.soundZone.hover(@soundHovered, @soundUnhovered) 
+		@uis.okZone.hover(@okHovered, @okUnhovered) 
+
 		@uis.imageFile.change @sendImage
 		@uis.soundFile.change @sendSound
+
+	imageHovered: =>
+		@uis.formHolder.addClass 'image-hovered'
+
+	imageUnhovered: =>
+		@uis.formHolder.removeClass 'image-hovered'
+
+	soundHovered: =>
+		@uis.formHolder.addClass 'sound-hovered'
+
+	soundUnhovered: =>
+		@uis.formHolder.removeClass 'sound-hovered'
+
+	okHovered: =>
+		@uis.formHolder.addClass 'ok-hovered'
+
+	okUnhovered: =>
+		@uis.formHolder.removeClass 'ok-hovered'
 
 
 	hasGetUserMedia: =>
@@ -219,13 +255,23 @@ class nasa.ContribForm extends Widget
 		$.ajax
 			url         : "/api/upload/#{type}"
 			type        : 'POST'
-			success     : console.log
+			success     : @onMediaSent
 			error       : not console or console.log
 			data        : form
 			cache       : false
 			contentType : false
 			processData : false
 			xhr         : -> $.ajaxSettings.xhr()
+
+	onMediaSent: (data) =>
+		response = JSON.parse(JSON.parse(data)) #DA FUK IZ DAT ? 
+		for media in response.medias
+			if media.type = 'picture'
+				@cache.imageUploaded = true
+			if media.type = 'audio'
+				@cache.soundUploaded = true
+
+
 
 class nasa.Navigation extends Widget
 
