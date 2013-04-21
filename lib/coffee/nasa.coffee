@@ -27,7 +27,6 @@ class nasa.ContribMap extends Widget
 
     bindUI:() =>
         super
-        console.log "bindUI"
         @uis.cMap.earth3d {
             texture: '/static/images/earth1024x1024.jpg',
             dragElement: @uis.locations 
@@ -64,12 +63,10 @@ class nasa.ContribMap extends Widget
         timeout = 1000
         for key, location  of locations
             do(location, key, self=this, timeout) ->
-                console.log "ok"
                 timeout += 1000
                 window.setTimeout(self.addLocation, timeout, self.MapAPI, location, key)
 
     getLastContribs: () =>
-        console.log "getLastContribs()"
         $.ajax
             url: '/api/map'
             type: 'GET'
@@ -114,7 +111,6 @@ class nasa.ContribMap extends Widget
                     self.addLocation(self.MapAPI, location, location.key)
 
         console.log locations
-        console.log "Received last contribs : ", data 
         
     onMapInitError: (data) =>
         console.error "An error occured while initliazing google earth: ", data
@@ -151,7 +147,6 @@ class nasa.ContribForm extends Widget
 		this.initForm()
 
 	relayout:()=>
-		console.log "relayout"
 
 	initForm:() =>
 		@initVideo()
@@ -293,7 +288,6 @@ class nasa.Navigation extends Widget
 		for slide in @uis.slides
 			slide = $(slide)
 			slide.css("top",slide.attr('data-position') * height)
-		console.log "@cache.activeSlide="+@cache.activeSlide
 		activeSlide = @ui.find('.slide[data-position='+@cache.activeSlide+']')
 		$('html,body').scrollTop(@cache.activeSlide * height)
 
