@@ -14,7 +14,6 @@
 from flask import Flask, render_template, request, send_file, \
 	send_from_directory, Response, abort, session, redirect, url_for
 import os, json, uuid, pymongo
-import preprocessing.preprocessing as preprocessing
 from embedly import Embedly
 from pymongo import MongoClient
 from bson.json_util import dumps
@@ -168,6 +167,7 @@ def uploaded_file(filename):
 # -----------------------------------------------------------------------------
 
 if __name__ == '__main__':
+	import preprocessing.preprocessing as preprocessing
 	import sys
 	if len(sys.argv) > 1 and sys.argv[1] == "collectstatic":
 		preprocessing._collect_static(app)
