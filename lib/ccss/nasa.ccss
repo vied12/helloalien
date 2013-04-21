@@ -60,14 +60,27 @@ body:
 	color   : $TEXT_COLOR
 	padding : 20px 0 0 0px
 	.contrib-form-background:
-		background-image: url('')
-		background-position: 0 0;
+		background-image: none
 		width: 450px
 		margin: auto
+
+		&.image-hovered:
+			background-position: 0
+		&.sound-hovered:
+			background-position: 0
+
 		&.image-uploaded:
-			background-position: 0;
+			background-position: 0
+			&.image-hovered:
+				background-position: 0
+			&.sound-hovered:
+				background-position: 0
 		&.sound-uploaded:
-			background-position: 0;
+			background-position: 0
+			&.image-hovered:
+				background-position: 0
+			&.sound-hovered:
+				background-position: 0
 
 .pull-right:
 	float: right
@@ -179,13 +192,6 @@ body:
 #bottleme:
 	.wrapper:
 		height : 950px
-	#imageZone:
-		margin: 30px 0;
-		-webkit-box-shadow: 0 0 50px rgba(0,0,0,0.13);
-		box-shadow: 0 0 50px rgba(0,0,0,0.13);
-		padding: 4px;
-		-webkit-border-radius: 3px;
-		border-radius: 3px;
 
 #theend:
 	.earth:
