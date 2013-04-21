@@ -16,40 +16,41 @@ Format   = window.serious.format
 Utils    = window.serious.Utils
 
 class nasa.ContribMap extends Widget
-	constructor:() ->
-		@UIS = {
-			cMap: '#sphere'
-		}
-		@ACTIONS = []
-		@MapAPI = null
-		@locations = {}
+    constructor:() ->
+        @UIS = {
+            cMap: '#sphere'
+        }
+        @ACTIONS = []
+        @MapAPI = null
+        @locations = {}
 
-	bindUI:() =>
-		super
-		console.log "bindUI"
-		this.getLastContribs()
-		@uis.cMap.earth3d {
-			texture: '/static/images/earth1024x1024.jpg',
-			dragElement: $('#locations') 
-		}
+    bindUI:() =>
+        super
+        console.log "bindUI"
+        this.getLastContribs()
+        @uis.cMap.earth3d {
+            texture: '/static/images/earth1024x1024.jpg',
+            dragElement: $('#locations') 
+        }
 
-	getLastContribs: () =>
-		console.log "getLastContribs()"
-		$.ajax
-			url: '/api/map'
-			type: 'GET'
-			dataType: 'json'
-			success: @onContribReceived
-			error: console.log
+    getLastContribs: () =>
+        console.log "getLastContribs()"
+        return
+        $.ajax
+            url: '/api/map'
+            type: 'GET'
+            dataType: 'json'
+            success: @onContribReceived
+            error: console.log
 
 
-	onContribReceived: (data) => 
-		console.log "Received last contribs : ", data 
-		
-	onMapInitError: (data) =>
-		console.error "An error occured while initliazing google earth: ", data
+    onContribReceived: (data) => 
+        console.log "Received last contribs : ", data 
+        
+    onMapInitError: (data) =>
+        console.error "An error occured while initliazing google earth: ", data
 
-	onMapInitSuccess: () =>
+    onMapInitSuccess: () =>
 
 
 class nasa.ContribForm extends Widget
@@ -134,11 +135,6 @@ class nasa.ContribForm extends Widget
 				contentType : false
 				processData : false
 				xhr         : -> $.ajaxSettings.xhr()
-		# $.ajax
-		# 	type: "POST"
-		# 	url: "/api/upload/avatar"
-		# 	data:
-		# 		imgBase64: @uis.canvas[0].toDataURL('image/webp')
 
 	hasGetUserMedia: () =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
@@ -147,24 +143,31 @@ class nasa.Navigation extends Widget
 
 	constructor: ->
 		@UIS = {
+			wrapper : '.wrapper'
 			slides	: '.slide'
 			nextButtons : '.next'		
 		}
-
+		@cache = {
+			activeSlide : 0
+		}
 	bindUI: (ui) =>		
 		super
-		this.init()
+		this.initPositions()
 		this.relayout()
 		$(window).on('resize',this.relayout)
 		@uis.nextButtons.each( (idx, el) => 
 			$(el).click(=>
 				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
 				nextSlide = $('.slide[data-position='+nextPos+']')
-				$("html, body").animate({ scrollTop: nextSlide.offset().top});
+				$('html,body').animate({ scrollTop: nextSlide.offset().top})
+				activeSlide = nextSlide
 			)
 		)
 
-	init:() =>
+	init:()=>
+		$('html,body').scrollTop(0)
+
+	initPositions:() =>
 		slideIdx=0
 		for slide in @uis.slides
 			slide = $(slide)
@@ -174,10 +177,12 @@ class nasa.Navigation extends Widget
 	relayout:()=>
 		height = $(window).height()
 		@uis.slides.height(height)
-		@uis.slides.width($(window).width())
+		@uis.slides.width($(window).width())		
 		for slide in @uis.slides
 			slide = $(slide)
 			slide.css("top",slide.attr('data-position') * height)
+		activeSlide = @ui.find('.slide[data-position='+@cache.activeSlide+']')
+		$('html,body').scrollTop(@cache.activeSlide * height)
 
 start = ->
 	$(window).load ()->
