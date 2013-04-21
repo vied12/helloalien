@@ -6,17 +6,20 @@ div.widget.Navigation data-widget="nasa.Navigation"
 
 		#intro.slide
 			.wrapper
+				.header
+					> img#logo src="/static/images/logo.png" title="Hello Alien!"
+
 				> img#solarsystem src="/static/images/solarsystem.png"
 				> img#voyager src="/static/images/voyager.png"
 				> img#paragraph1 src="/static/images/paragraph1.png"
-				> img#paragraph2 src="/static/images/paragraph2.png"
-				> img#img_2 src="/static/images/img_2.png"
-				> img#img_3 src="/static/images/img_3.png"
-				> img#img_4 src="/static/images/img_4.png"
-				> img#img_5 src="/static/images/img_5.png"				
-				.header
-					> img#logo src="/static/images/logo.png" title="Hello Alien!"
-				> img.next src="/static/images/next.png" 
+				> img#paragraph2 src="/static/images/paragraph2.png"	
+				.relatives
+					> img#img_2 src="/static/images/img_2.png"
+					> img#img_3 src="/static/images/img_3.png"
+					> img#img_4 src="/static/images/img_4.png"
+					> img#img_5 src="/static/images/img_5.png"	
+					a.next 
+						span | next 
 
 		#bottleme.slide
 			.wrapper.autoHeight
@@ -39,17 +42,20 @@ div.widget.Navigation data-widget="nasa.Navigation"
 							label for="id_sound"
 								Son
 								> input.soundFile#id_sound type="file" name="soundFile"  data-type="sound"
-				> img.next src="/static/images/go.png" 
+				> img.next src="/static/images/ok.png" 
 
 		#theend.slide
 			.wrapper.autoHeight
-				.ImageSlider.widget data-widget="nasa.ImageSlider"
-					> img width=100 height=100 src=""
-				.earth
-					{% include 'carte.html' %}
-				.radio
-					p | RADIO PLAYER playlist
-				.don
-					p | bottle 
+				.dash
+					.ImageSlider.widget data-widget="nasa.ImageSlider"
+						> img width=77 height=77 src=""
+					.earth
+						{% include 'carte.html' %}
+					.radio.hidden
+						p | RADIO PLAYER playlist
+					.don
+						embed src="/static/images/bottle_animation.swf" width="300px height="350px" wmode="transparent"
+							> param name="wmode" value="transparent"
+
 
 {% endblock %}

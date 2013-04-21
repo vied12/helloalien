@@ -67,20 +67,28 @@ body:
 		.wrapper :
 			max-width : 980px
 			margin : auto
-	.next:
-		position : absolute
+	img.next:
 		bottom : 60px
-		left : 48%
+	a.next:
+		display : block
 		margin : auto
 		cursor : pointer
-		padding : 10px
-		border-radius : 5px
+		padding : 0px
+		width : 150px
+		height : 160px
+		background-position: 0px 0px
+		background:url(/static/images/btn_sayhello.png)
+		span:
+			opacity : 0
+		&:hover:
+			background-position : '0px' '-170px'
+
 
 #intro:
 	color : #222
 	.wrapper:
 		position: relative
-		height : 3830px
+		height : 3920px
 	img :
 		position : absolute
 	#solarsystem:
@@ -99,22 +107,18 @@ body:
 		top: 622px;
 		left: 50px;		
 	#img_2:
-		top: 561px;
-		left: 89px;
-	#img_3:
-		top: 1348px;
-		left: 0px;
-	#img_4:
-		top: 2080px;
-		left: 16px;
-	#img_5:
-		top: 3150px;
-		left: 16px;		
+		left: 91px;			
 	.header:
 		text-align :center
 		#logo:
 			top : 20px
 			position : relative
+	.relatives:
+		position : absolute
+		top : 557px
+		img:
+			position : relative
+			margin-bottom : 100px
 #analyze:
 	color : $TEXT_COLOR
 
@@ -183,20 +187,42 @@ body:
 			height :140px
 
 #theend:
-	.earth:
-		position : relative
-		width: 100%;
-		.ContribMap:
-			#contrib-map:
-				position: absolute;
-				height: 400px;
-				#sphere, #flights, #glow-shadows, #locations, #drag:
-					position: absolute
-					left: 300px
-					top: 170px
-					width: 400px
-					height: 400px
-					margin : auto
-				#glow-shadows:
-					background-image: url('../images/earth-glow-shadows.png')
+	.wrapper:
+		.dash:
+			background:url(/static/images/plateforme_tableau-de-bord.png) no-repeat
+			position : relative
+			top : 20px
+			left : 20px
+			width: 950px;
+			height: 714px;
+		.don:
+			position : absolute;
+			top: 446px;
+			left: 634px;
+			embed: 
+				height : 231px
+
+		.earth:
+			position : relative
+			width: 100%;
+			.ContribMap:
+				#contrib-map:
+					position: absolute;
+					height: 400px;
+					#sphere, #flights, #glow-shadows, #locations, #drag:
+						position: absolute
+						left: 176px;
+						top: 85px;
+						width: 600px
+						height: 600px
+						margin : auto
+					#glow-shadows:
+						background-repeat: no-repeat
+						background-size : 600px 600px 
+						background-image: url('../images/earth-glow-shadows.png')
+		.ImageSlider:
+			position : absolute;
+			top: 374px;
+			left: 128px;
+
 
