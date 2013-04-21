@@ -35,6 +35,7 @@ class nasa.ContribMap extends Widget
 
     getLastContribs: () =>
         console.log "getLastContribs()"
+        return
         $.ajax
             url: '/api/map'
             type: 'GET'
@@ -122,24 +123,31 @@ class nasa.Navigation extends Widget
 
 	constructor: ->
 		@UIS = {
+			wrapper : '.wrapper'
 			slides	: '.slide'
 			nextButtons : '.next'		
 		}
-
+		@cache = {
+			activeSlide : 0
+		}
 	bindUI: (ui) =>		
 		super
-		this.init()
+		this.initPositions()
 		this.relayout()
 		$(window).on('resize',this.relayout)
 		@uis.nextButtons.each( (idx, el) => 
 			$(el).click(=>
 				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
 				nextSlide = $('.slide[data-position='+nextPos+']')
-				$("html, body").animate({ scrollTop: nextSlide.offset().top});
+				$('html,body').animate({ scrollTop: nextSlide.offset().top})
+				activeSlide = nextSlide
 			)
 		)
 
-	init:() =>
+	init:()=>
+		$('html,body').scrollTop(0)
+
+	initPositions:() =>
 		slideIdx=0
 		for slide in @uis.slides
 			slide = $(slide)
@@ -149,10 +157,12 @@ class nasa.Navigation extends Widget
 	relayout:()=>
 		height = $(window).height()
 		@uis.slides.height(height)
-		@uis.slides.width($(window).width())
+		@uis.slides.width($(window).width())		
 		for slide in @uis.slides
 			slide = $(slide)
 			slide.css("top",slide.attr('data-position') * height)
+		activeSlide = @ui.find('.slide[data-position='+@cache.activeSlide+']')
+		$('html,body').scrollTop(@cache.activeSlide * height)
 
 start = ->
     $(window).load ()->

@@ -10,6 +10,7 @@ html lang="en"
 		> link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}" media="all"
 		> link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/nasa.css')}}" media="all"		
 		> link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/vader/jquery-ui.css" media="all"
+		> link href='http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic' rel='stylesheet' type='text/css'
 		script type="text/javascript" src="{{url_for('static', filename='js/jquery172.js')}}" | {# #}
 		script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js" | {# #}
 		script type="text/javascript" src="https://www.google.com/jsapi" | {# #}
