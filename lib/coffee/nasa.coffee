@@ -91,7 +91,7 @@ class nasa.ContribMap extends Widget
         console.log @uis.locations
 
         console.log "Received last contribs : ", data 
-
+        
     onMapInitError: (data) =>
         console.error "An error occured while initliazing google earth: ", data
 
@@ -109,14 +109,16 @@ class nasa.ContribForm extends Widget
 			imageFile 	: ".imageFile"
 			soundZone	: "#soundZone"
 			soundFile 	: ".soundFile"
-			video	: "video"
-			canvas	: "canvas"
-			image	: "img"
+			video	    : "video"
+			canvas	    : "canvas"
+			image	    : "img.avatar"
 		}
 		@cache = {
 			imageZone : null
 			soundZone : null
 		}
+		@ACTIONS = ['snapshot']
+
 	bindUI: (ui) =>		
 		super
 		console.log "contrib"
@@ -127,12 +129,7 @@ class nasa.ContribForm extends Widget
 		console.log "relayout"
 
 	initForm:() =>
-		# @cache.imageZone = new Dropzone("div#imageZone", { url: "/api/upload/image"})
-		# @cache.soundZone = new Dropzone("div#soundZone", { url: "/api/upload/sound"})
-		#@uis.soundZone.dropzone({ url: "/api/upload/sound" })
-		#@uis.imageZone.dropzone({ url: "/api/upload/image" })	
 		@initVideo()
-
 
 	hasGetUserMedia: =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -151,6 +148,7 @@ class nasa.ContribForm extends Widget
 			navigator.getUserMedia({video: true}, ((localMediaStream) =>
 				my_url = window.webkitURL || window.URL
 				@uis.video.attr('src', my_url.createObjectURL(localMediaStream))
+				@localMediaStream = localMediaStream
 				# // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
 				# // See crbug.com/110938.
 				@uis.video.get().onloadedmetadata = console.log
@@ -160,11 +158,31 @@ class nasa.ContribForm extends Widget
 			@uis.video.attr('src', 'somevideo.webm')
 
 	snapshot: =>
-		ctx = canvas.getContext('2d')
-		if localMediaStream
-			ctx.drawImage(video, 0, 0)
+		console.log('pouet')
+		ctx = @uis.canvas[0].getContext('2d')
+		if @localMediaStream
+			ctx.drawImage(@uis.video[0], 0, 0)
 			# // "image/webp" works in Chrome 18. In other browsers, this will fall back to image/png.
-			uis.image.attr('src', canvas.toDataURL('image/webp'))
+			@uis.image.attr('src', @uis.canvas[0].toDataURL('image/webp'))
+
+
+			# we create a local form
+			$form = $("<form enctype=\"multipart/form-data\"></form>")
+			# $form.append @uis.fileInputField.clone(true, true)
+			form =  new FormData $form[0]
+			form.append "avatar", @uis.canvas[0].toDataURL('image/webp')
+
+			# We send the data throw ajax
+			$.ajax
+				url         : "/api/upload/avatar"
+				type        : 'POST'
+				success     : console.log
+				error       : not console or console.log
+				data        : form
+				cache       : false
+				contentType : false
+				processData : false
+				xhr         : -> $.ajaxSettings.xhr()
 
 	hasGetUserMedia: () =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
@@ -173,13 +191,16 @@ class nasa.Navigation extends Widget
 
 	constructor: ->
 		@UIS = {
+			wrapper : '.wrapper'
 			slides	: '.slide'
 			nextButtons : '.next'		
 		}
-
+		@cache = {
+			activeSlide : 0
+		}
 	bindUI: (ui) =>		
 		super
-		this.init()
+		this.initPositions()
 		this.relayout()
 		$(window).on('resize',this.relayout)
 		@uis.nextButtons.each( (idx, el) => 
@@ -187,13 +208,15 @@ class nasa.Navigation extends Widget
 				console.log "click"
 				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
 				nextSlide = $('.slide[data-position='+nextPos+']')
-				console.log "nextPos "+nextPos+" "+nextSlide.offset().top
-				#$(window).scrollTop(nextSlide.offset().top)
-				$("html, body").animate({ scrollTop: nextSlide.offset().top});
+				$('html,body').animate({ scrollTop: nextSlide.offset().top})
+				activeSlide = nextSlide
 			)
 		)
 
-	init:() =>
+	init:()=>
+		$('html,body').scrollTop(0)
+
+	initPositions:() =>
 		slideIdx=0
 		for slide in @uis.slides
 			slide = $(slide)
@@ -204,16 +227,14 @@ class nasa.Navigation extends Widget
 	relayout:()=>
 		height = $(window).height()
 		@uis.slides.height(height)
-		@uis.slides.width($(window).width())
+		@uis.slides.width($(window).width())		
 		for slide in @uis.slides
 			slide = $(slide)
 			slide.css("top",slide.attr('data-position') * height)
-	
-	goToNextSlide:()=>
-
-
+		activeSlide = @ui.find('.slide[data-position='+@cache.activeSlide+']')
+		$('html,body').scrollTop(@cache.activeSlide * height)
 
 start = ->
-    $(window).load ()->
-        Widget.bindAll()
+	$(window).load ()->
+		Widget.bindAll()
 # EOF

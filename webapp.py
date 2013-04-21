@@ -11,13 +11,16 @@
 # Last mod : 
 # -----------------------------------------------------------------------------
 
-from flask import Flask, render_template, request, send_file, Response, abort, session, redirect, url_for
+from flask import Flask, render_template, request, send_file, \
+	send_from_directory, Response, abort, session, redirect, url_for
 import os, json, uuid, pymongo
 import preprocessing.preprocessing as preprocessing
 from embedly import Embedly
 from pymongo import MongoClient
 from bson.json_util import dumps
 from httplib2 import Http
+from werkzeug import secure_filename
+from base64 import b64decode
 
 app       = Flask(__name__)
 app.config.from_pyfile("settings.cfg")
@@ -43,6 +46,10 @@ def get_referer():
 		session['referer'] = referer
 	return referer
 
+def allowed_file(filename):
+	return '.' in filename and \
+		   filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
 # -----------------------------------------------------------------------------
 #
 # API
@@ -62,9 +69,25 @@ def upload_picture():
 
 @app.route('/api/upload/avatar', methods=['post'])
 def upload_avatar():
-	f     = request.files.get('avatar')
-	media = upload_file(f, type='avatar', referer=get_referer())
-	return dumps(media)
+	encoded  = request.form.get('avatar').split('base64,')[1]
+	filename = os.path.join(app.config['UPLOAD_FOLDER'], str(uuid.uuid4()))
+	with open(filename,"wb") as f:
+		f.write(b64decode(encoded))
+	media  = {
+		'type': 'avatar',
+		'url' : filename
+	}
+	contrib = get_contribution(get_referer())
+	done    = False
+	for i, _m in enumerate(contrib['medias']):
+		if media['type'] == 'avatar':
+			contrib['medias'][i] = media
+			done = True
+			break
+	if not done:
+		contrib['medias'].append(media)
+	get_collection('contributions').save(contrib)
+	return dumps(contrib)
 
 @app.route('/api/userInfos', methods=['post'])
 def user_infos():
@@ -86,11 +109,20 @@ def map():
 	contributions = get_collection('contributions')
 	return dumps(contributions.find())
 
-def upload_file(f, referer, type):
-	filename = f.filename
+def upload_file(file, referer, type):
+	if file and allowed_file(file.filename):
+			filename = secure_filename(file.filename)
+			save_as = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+			file.save(save_as)
+
+			
+	# if hasattr(f, 'filename'):
+	# 	filename = f.filename
+	# else:
+	# 	filename = "coucou"
 	# save file
-	save_as = os.path.join('uploaded', filename)
-	f.save(save_as)
+	# save_as = os.path.join('uploaded', filename)
+	# f.save(save_as)
 	# keep the reference
 	client = Embedly('a54233f91473419f9a947e1300f27f9b')
 	obj    = client.oembed('http://instagr.am/p/BL7ti/')
@@ -120,6 +152,9 @@ def index():
 # Utils
 #
 # -----------------------------------------------------------------------------
+@app.route('/uploaded/<filename>')
+def uploaded_file(filename):
+	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # -----------------------------------------------------------------------------
 #

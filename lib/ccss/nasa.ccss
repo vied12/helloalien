@@ -1,14 +1,14 @@
 
 TEXT_COLOR  = #222
 TILE_BRAND_COLOR        = "rgba(10,12,6,0.7)"
-ALTERNATE_FONT = Verdana, sans-serif	
+ALTERNATE_FONT = Verdana, sans-serif
 
 body:
+	font-family: 'Ubuntu', sans-serif;
 	background-color 	: white
 	background-size 	: cover
 	color   : $TEXT_COLOR
 	overflow : hidden
-	
 	a: 
 		color 	: #98B2C6
 	.disableTextSelection:
@@ -22,7 +22,9 @@ body:
 	padding : 20px 0 0 0px
 
 .Navigation:
-	overflow: hidden
+	.wrapper:
+		overflow: hidden
+		max-width : 900px
 	.slide:
 		width : 100%
 		border : 1px solid #fff
@@ -38,14 +40,17 @@ body:
 		color : white
 		cursor : pointer
 
-#imageZone:
-	margin: 30px 0;
-	-webkit-box-shadow: 0 0 50px rgba(0,0,0,0.13);
-	box-shadow: 0 0 50px rgba(0,0,0,0.13);
-	padding: 4px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
+#intro:
+	background-image: url(/static/images/bg.png)
+	color : #222
+	.header:
+		text-align :center
+		#logo:
+			width : 200px 
+#analyze:
+	background-color:#eee
 
+<<<<<<< HEAD
 .ContribMap:
 	#contrib-map:
 		position: relative;
@@ -79,3 +84,35 @@ body:
 				margin-top: -5px 
 				width: 20px
 				height: 20px
+=======
+#bottleme:
+	background-color:#eee
+	#imageZone:
+		margin: 30px 0;
+		-webkit-box-shadow: 0 0 50px rgba(0,0,0,0.13);
+		box-shadow: 0 0 50px rgba(0,0,0,0.13);
+		padding: 4px;
+		-webkit-border-radius: 3px;
+		border-radius: 3px;
+#theend:
+	background-color:#000
+	color : #fff 
+	.earth:
+		position : relative
+		text-align : center
+		width: 100%;
+		.ContribMap:
+			#contrib-map:
+				position: absolute;
+				display: inline-block;
+				height: 400px;
+				#sphere, #flights, #glow-shadows, #locations, #drag:
+					position: absolute
+					top: 0px
+					left: 0px
+					width: 400px
+					height: 400px
+					margin : auto
+				#glow-shadows:
+					background-image: url('../images/earth-glow-shadows.png')
+>>>>>>> 3b311d30910fc5712cda97f2d22f888a2f4bfc00
