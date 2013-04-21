@@ -1,4 +1,4 @@
-.ContribMap.widget data-widget="nasa.ContribMap" 
+.ContribMap.widget_ data-widget="nasa.ContribMap" 
 	#contrib-map
 		canvas id="sphere" width="400" height="400" | {# #} 
 		#glow-shadows.earth | {# #}

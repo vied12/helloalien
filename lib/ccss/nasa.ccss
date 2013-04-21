@@ -49,6 +49,7 @@ body:
 	color   : $TEXT_COLOR
 	padding : 20px 0 0 0px
 
+
 .Navigation:
 	.wrapper:
 		width : 980px
@@ -77,10 +78,9 @@ body:
 
 #intro:
 	color : #222
-	height : 3000px
 	.wrapper:
 		position: relative
-		height : 3000px
+		height : 3830px
 	img :
 		position : absolute
 	#solarsystem:
@@ -90,7 +90,6 @@ body:
 		top: 473px;
 		left: 308px;
 		z-index: 10;
-		width: 297px;
 	#paragraph1:
 		top: 393px;
 		left: 450px;
@@ -103,11 +102,14 @@ body:
 		top: 561px;
 		left: 89px;
 	#img_3:
-		top: 1278px;
+		top: 1348px;
 		left: 0px;
 	#img_4:
-		top: 1860px;
+		top: 2080px;
 		left: 16px;
+	#img_5:
+		top: 3150px;
+		left: 16px;		
 	.header:
 		text-align :center
 		#logo:
@@ -172,6 +174,13 @@ body:
 		padding: 4px;
 		-webkit-border-radius: 3px;
 		border-radius: 3px;
+	.avatar:
+		video,img : 
+			position : absolute
+			top : 0 
+			left : 0
+			width : 200px
+			height :140px
 
 #theend:
 	.earth:
