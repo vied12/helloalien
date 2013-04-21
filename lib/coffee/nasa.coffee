@@ -46,7 +46,8 @@ class nasa.ContribMap extends Widget
 
     addLocation: (location, key) =>
         @map.options.locations[key] = location
-        @map._initLocations();
+        location.visible = true
+        @map.options.onInitLocation(location, @map)
 
     onContribReceived: (data) => 
         locations = {
