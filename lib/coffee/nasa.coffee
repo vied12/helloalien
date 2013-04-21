@@ -109,8 +109,6 @@ class nasa.ContribMap extends Widget
                 if self.locations[location.key] is undefined
                     self.locations[location.key] = location
                     self.addLocation(self.MapAPI, location, location.key)
-
-        console.log locations
         
     onMapInitError: (data) =>
         console.error "An error occured while initliazing google earth: ", data
@@ -290,6 +288,37 @@ class nasa.Navigation extends Widget
 			slide.css("top",slide.attr('data-position') * height)
 		activeSlide = @ui.find('.slide[data-position='+@cache.activeSlide+']')
 		$('html,body').scrollTop(@cache.activeSlide * height)
+
+# -----------------------------------------------------------------------------
+#
+#    Image slider
+#
+# -----------------------------------------------------------------------------
+class nasa.ImageSlider extends Widget
+	constructor: ->
+		@UIS = {
+			image : 'img'
+		}
+		@images = []
+		@currentImageIndex = 0
+
+	bindUI: =>
+		super
+		$.getJSON '/api/pictures', (data) =>
+			@images = data
+			@start()
+
+	setImage: (img) =>
+		@uis.image.attr('src', img)
+
+	start: =>
+		if @images.length <= @currentImageIndex + 1
+			@currentImageIndex = 0
+		url_img = @images[@currentImageIndex]
+		$("<img/>").attr('src', url_img).load =>
+			@setImage(url_img)
+			@currentImageIndex += 1
+			setTimeout(@start, 1000)
 
 start = ->
     $(window).load ()->

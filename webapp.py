@@ -128,6 +128,16 @@ def map():
 	contributions = get_collection('contributions')
 	return dumps(contributions.find())
 
+@app.route('/api/pictures', methods=['get'])
+def pictures():
+	res = []
+	contributions = get_collection('contributions')
+	for c in contributions.find():
+		for media in c['medias']:
+			if media['type'] == 'picture':
+				res.append(media['url'])
+	return dumps(res)
+
 def upload_file(file, referer, type):
 	if file and allowed_file(file.filename):
 		filename = secure_filename(file.filename)
