@@ -60,8 +60,6 @@ body:
 	color   : $TEXT_COLOR
 	padding : 20px 0 0 0px
 	.contrib-form-background:
-		background-image: url('')
-		background-position: 0 0;
 		width: 450px
 		margin: auto
 		&.image-uploaded:
@@ -179,14 +177,7 @@ body:
 #bottleme:
 	.wrapper:
 		height : 950px
-	#imageZone:
-		margin: 30px 0;
-		-webkit-box-shadow: 0 0 50px rgba(0,0,0,0.13);
-		box-shadow: 0 0 50px rgba(0,0,0,0.13);
-		padding: 4px;
-		-webkit-border-radius: 3px;
-		border-radius: 3px;
-
+		
 #theend:
 	.earth:
 		position : relative
