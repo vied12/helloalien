@@ -25,7 +25,7 @@ app       = Flask(__name__)
 app.config.from_pyfile("settings.cfg")
 
 def get_collection(collection):
-	client = MongoClient()
+	client = MongoClient(app.config['MONGO_HOST'])
 	db     = client['platinium']
 	return db[collection]
 
