@@ -19,24 +19,7 @@ div.widget.Navigation data-widget="nasa.Navigation"
 
 		#bottleme.slide
 			.wrapper.autoHeight
-				#contribForm.widget data-widget="nasa.ContribForm"
-					.avatar
-						video.do autoplay data-action='snapshot' | {##}
-						> img.avatar
-						canvas style="display:none;" | {##}
-						> input type="file" accept="image/*;capture=camera"
-
-					#imageZone.uploadField
-						form enctype="multipart/form-data" method="POST"
-							label for="id_image"
-								Image
-								> input#id_image type="file" name="imageFile" data-type="image"
-
-					#soundZone.uploadField
-						form enctype="multipart/form-data" method="POST"				
-							label for="id_sound"
-								Son
-								> input.soundFile#id_sound type="file" name="soundFile"  data-type="sound"
+				{% include 'contrib_form.html' %}
 				.next.btn-large | Next
 
 		#theend.slide
