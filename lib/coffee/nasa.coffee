@@ -135,22 +135,45 @@ class nasa.ContribForm extends Widget
 		@cache = {
 			imageZone : null
 			soundZone : null
-			uploadedImage: null
-			uploadedSound: null
+			uploadedImage: false
+			uploadedSound: false
 		}
 		@ACTIONS = ['snapshot', 'sendImage', 'sendSound']
 
 	bindUI: (ui) =>
 		super
 		this.initForm()
+		@ffTweak()
+	
+	ffTweak: () =>
+		if $.browser.mozilla
+			@ui.find('.uploadField label').bind 'click', (e) -> 
+				elem = e.target()
+				e.stopPropagation()
+				id = $(elem).attr('for')
+				$("input##{id}").click()
 
 	initForm: =>
 		@initVideo()
 		@bindFields()
 
 	bindFields: =>
+		@uis.imageZone.hover(@imageHovered, @imageUnhovered) 
+		@uis.soundZone.hover(@soundHovered, @soundUnhovered) 
 		@uis.imageFile.change @sendImage
 		@uis.soundFile.change @sendSound
+
+	imageHovered: =>
+		@uis.formHolder.addClass 'image-hovered'
+
+	imageUnhovered: =>
+		@uis.formHolder.removeClass 'image-hovered'
+
+	soundHovered: =>
+		@uis.formHolder.addClass 'sound-hovered'
+
+	soundUnhovered: =>
+		@uis.formHolder.removeClass 'sound-hovered'
 
 
 	hasGetUserMedia: =>
@@ -214,11 +237,12 @@ class nasa.ContribForm extends Widget
 			if @cache.soundUploaded
 				formImageClass = "sound-uploaded"
 
-		@uis.formHolder.removeClass((index, klass) -> 
-				if index > 0 
-					return klass
-			)
+		
+		@uis.formHolder.removeClass "image-uploaded"
+		@uis.formHolder.removeClass "sound-uploaded"
 		@uis.formHolder.addClass formImageClass
+	
+
 	sendImage: =>
 		@sendMedia('picture', @uis.imageFile)
 
@@ -244,10 +268,12 @@ class nasa.ContribForm extends Widget
 			xhr         : -> $.ajaxSettings.xhr()
 
 	onMediaSent: (data) =>
-		for media in data.medias
+		response = JSON.parse(JSON.parse(data)) #DA FUK IZ DAT ? 
+		for media in response.medias
 			if media.type = 'picture'
-				@cache.uplaodedPicture = media
-
+				@cache.imageUploaded = true
+			if media.type = 'audio'
+				@cache.soundUploaded = true
 		@updateFormPicture() 
 
 
