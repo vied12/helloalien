@@ -24,6 +24,8 @@ div.widget.Navigation data-widget="nasa.Navigation"
 
 		#theend.slide
 			.wrapper.autoHeight
+				.ImageSlider.widget data-widget="nasa.ImageSlider"
+					> img width=100 height=100 src=""
 				.earth
 					{% include 'carte.html' %}
 				.radio
@@ -32,4 +34,3 @@ div.widget.Navigation data-widget="nasa.Navigation"
 					p | bottle 
 
 {% endblock %}
-
