@@ -7,7 +7,6 @@ html lang="en"
 		> link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'
 		> link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/jquery.jscrollpane.css')}}" media="all"
 		> link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/base.css')}}" media="all"
-		> link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}" media="all"
 		> link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/nasa.css')}}" media="all"		
 		> link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/vader/jquery-ui.css" media="all"
 		> link href='http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic' rel='stylesheet' type='text/css'
@@ -30,5 +29,3 @@ html lang="en"
 		script type="text/javascript" src="{{url_for('static', filename='js/formatting.js')  }}"                   | {# #}
 		script type="text/javascript" src="{{url_for('static', filename='js/nasa.js')  }}"                         | {# #}
 
-		script type="text/javascript"
-			start();

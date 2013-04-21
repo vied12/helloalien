@@ -9,3 +9,4 @@ fabric
 #shove
 pyjade
 embedly
+gunicorn

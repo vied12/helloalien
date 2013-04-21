@@ -131,8 +131,10 @@ class nasa.ContribForm extends Widget
 			form	: "form"			
 			imageZone 	: "#imageZone"
 			imageFile 	: ".imageFile"
+			imageLink 	: ".imageLink"
 			soundZone	: "#soundZone"
 			soundFile 	: ".soundFile"
+			soundLink 	: ".soundLink"
 			video	    : "video"
 			canvas	    : "canvas"
 			image	    : "img.avatar"
@@ -141,11 +143,10 @@ class nasa.ContribForm extends Widget
 			imageZone : null
 			soundZone : null
 		}
-		@ACTIONS = ['snapshot']
+		@ACTIONS = ['snapshot', 'sendImage', 'sendSound']
 
-	bindUI: (ui) =>		
+	bindUI: (ui) =>
 		super
-		console.log "contrib"
 		this.relayout()
 		this.initForm()
 
@@ -182,20 +183,16 @@ class nasa.ContribForm extends Widget
 			@uis.video.attr('src', 'somevideo.webm')
 
 	snapshot: =>
-		console.log('pouet')
 		ctx = @uis.canvas[0].getContext('2d')
 		if @localMediaStream
 			ctx.drawImage(@uis.video[0], 0, 0)
 			# // "image/webp" works in Chrome 18. In other browsers, this will fall back to image/png.
 			@uis.image.attr('src', @uis.canvas[0].toDataURL('image/webp'))
-
-
 			# we create a local form
 			$form = $("<form enctype=\"multipart/form-data\"></form>")
 			# $form.append @uis.fileInputField.clone(true, true)
 			form =  new FormData $form[0]
 			form.append "avatar", @uis.canvas[0].toDataURL('image/webp')
-
 			# We send the data throw ajax
 			$.ajax
 				url         : "/api/upload/avatar"
@@ -211,6 +208,47 @@ class nasa.ContribForm extends Widget
 	hasGetUserMedia: () =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
 
+	sendImage: =>
+		if @uis.imageLink.val() != ""
+			@sendMedia('picture', @uis.imageLink.val())
+		else
+			@sendMedia('picture', @uis.imageFile, true)
+
+	sendSound: =>
+		if @uis.soundLink.val() != ""
+			@sendMedia('audio', @uis.soundLink.val())
+		else
+			@sendMedia('audio', @uis.soundFile, true)
+
+	sendMedia: (type, value, bin=false) =>
+		if not bin
+			data = {
+				type : type
+				value: value
+			}
+			$.ajax
+				url         : "/api/media"
+				type       	: 'POST'
+				data       	: data
+				dataType   	: 'json'
+		else
+			# we create a local form
+			$form = $("<form enctype=\"multipart/form-data\"></form>")
+			# $form.append @uis.fileInputField.clone(true, true)
+			form =  new FormData $form[0]
+			form.append type, value.prop("files")[0]
+			# We send the data throw ajax
+			$.ajax
+				url         : "/api/upload/#{type}"
+				type        : 'POST'
+				success     : console.log
+				error       : not console or console.log
+				data        : form
+				cache       : false
+				contentType : false
+				processData : false
+				xhr         : -> $.ajaxSettings.xhr()
+
 class nasa.Navigation extends Widget
 
 	constructor: ->
@@ -222,6 +260,7 @@ class nasa.Navigation extends Widget
 		@cache = {
 			activeSlide : 0
 		}
+
 	bindUI: (ui) =>		
 		super
 		this.initPositions()
@@ -229,11 +268,10 @@ class nasa.Navigation extends Widget
 		$(window).on('resize',this.relayout)
 		@uis.nextButtons.each( (idx, el) => 
 			$(el).click(=>
-				console.log "click"
 				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
 				nextSlide = $('.slide[data-position='+nextPos+']')
 				$('html,body').animate({ scrollTop: nextSlide.offset().top})
-				activeSlide = nextSlide
+				@cache.activeSlide  = parseInt(nextPos)
 			)
 		)
 
@@ -247,18 +285,22 @@ class nasa.Navigation extends Widget
 			slide.attr('data-position', slideIdx)
 			slideIdx++
 
-
 	relayout:()=>
-		height = $(window).height()
+		height = $(window).height()		
 		@uis.slides.height(height)
+		@ui.find('.autoHeight').height(height)
 		@uis.slides.width($(window).width())		
 		for slide in @uis.slides
 			slide = $(slide)
 			slide.css("top",slide.attr('data-position') * height)
+		console.log "@cache.activeSlide="+@cache.activeSlide
 		activeSlide = @ui.find('.slide[data-position='+@cache.activeSlide+']')
 		$('html,body').scrollTop(@cache.activeSlide * height)
 
 start = ->
-	$(window).load ()->
-		Widget.bindAll()
+    $(window).load ()->
+        Widget.bindAll()
+
+start()
+
 # EOF
