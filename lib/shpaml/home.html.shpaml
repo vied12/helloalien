@@ -30,7 +30,6 @@ div.widget.Navigation data-widget="nasa.Navigation"
 						> img.avatar
 						canvas style="display:none;" | {##}
 						> input.avatarName type="text" name="avatarName" 
-						> input.email type="text" name="email"  
 						> input type="file" accept="image/*;capture=camera"
 
 					#imageZone 

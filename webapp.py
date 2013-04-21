@@ -38,6 +38,20 @@ def get_contribution(referer):
 		contrib =  get_contribution(referer)
 	return contrib
 
+def update_media(media, referer):
+	type = media['type']
+	contribution = get_contribution(referer)
+	done = False
+	for i, _media in enumerate(contribution['medias']):
+		if _media['type'] == type:
+			contribution['medias'][i] = media
+			done = True
+			break
+	if not done:
+		contribution['medias'].append(media)
+	get_collection('contributions').save(contribution)
+	return contribution
+
 def get_referer():
 	if 'referer' in session:
 		referer = session['referer']
@@ -48,16 +62,16 @@ def get_referer():
 
 def allowed_file(filename):
 	return '.' in filename and \
-		   filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+		   filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 # -----------------------------------------------------------------------------
 #
 # API
 #
 # -----------------------------------------------------------------------------
-@app.route('/api/upload/sound', methods=['post'])
+@app.route('/api/upload/audio', methods=['post'])
 def upload_sound():
-	f     = request.files.get('sound')
+	f     = request.files.get('audio')
 	media = upload_file(f, type='audio', referer=get_referer())
 	return dumps(media)
 
@@ -66,7 +80,7 @@ def upload_picture():
 	f     = request.files.get('picture')
 	media = upload_file(f, type='picture', referer=get_referer())
 	return dumps(media)
-
+	
 @app.route('/api/upload/avatar', methods=['post'])
 def upload_avatar():
 	encoded  = request.form.get('avatar').split('base64,')[1]
@@ -77,16 +91,22 @@ def upload_avatar():
 		'type': 'avatar',
 		'url' : filename
 	}
-	contrib = get_contribution(get_referer())
-	done    = False
-	for i, _m in enumerate(contrib['medias']):
-		if media['type'] == 'avatar':
-			contrib['medias'][i] = media
-			done = True
-			break
-	if not done:
-		contrib['medias'].append(media)
-	get_collection('contributions').save(contrib)
+	contribution = update_media(media, get_referer())
+	return dumps(contribution)
+
+@app.route('/api/media', methods=['post'])
+def set_media():
+	link = request.form.get('value')
+	contribution = get_contribution(get_referer())
+	client = Embedly('a54233f91473419f9a947e1300f27f9b')
+	obj    = client.oembed(link)
+	meta   = obj.__dict__
+	media  = {
+		'type'    : request.form.get('type'),
+		'url'     : meta.get('url'),
+		'meta'    : meta
+	}
+	contrib = update_media(media, get_referer())
 	return dumps(contrib)
 
 @app.route('/api/userInfos', methods=['post'])
@@ -111,31 +131,16 @@ def map():
 
 def upload_file(file, referer, type):
 	if file and allowed_file(file.filename):
-			filename = secure_filename(file.filename)
-			save_as = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-			file.save(save_as)
-
-			
-	# if hasattr(f, 'filename'):
-	# 	filename = f.filename
-	# else:
-	# 	filename = "coucou"
-	# save file
-	# save_as = os.path.join('uploaded', filename)
-	# f.save(save_as)
-	# keep the reference
-	client = Embedly('a54233f91473419f9a947e1300f27f9b')
-	obj    = client.oembed('http://instagr.am/p/BL7ti/')
-	meta   = obj.__dict__
-	media  = {
-		'type'    : type,
-		'url'     : save_as,
-		'meta'    : meta
-	}
-	contrib = get_contribution(referer)
-	contrib['medias'].append(media)
-	get_collection('contributions').save(contrib)
-	return contrib
+		filename = secure_filename(file.filename)
+		save_as = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+		file.save(save_as)
+		media  = {
+			'type'    : type,
+			'url'     : save_as,
+		}
+		contrib = update_media(media, referer)
+		return dumps(contrib)
+	return 'error, file unsupported'
 
 # -----------------------------------------------------------------------------
 #

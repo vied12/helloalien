@@ -17,8 +17,14 @@ Utils    = window.serious.Utils
 
 class nasa.ContribMap extends Widget
     constructor:() ->
+        @obj1 = {
+            alpha: Math.PI / 4,
+            delta: 0,
+            name: 'location 1'
+        }
         @UIS = {
             cMap: '#sphere'
+            locations: '#locations'
         }
         @ACTIONS = []
         @MapAPI = null
@@ -28,28 +34,70 @@ class nasa.ContribMap extends Widget
         super
         console.log "bindUI"
         this.getLastContribs()
-        @uis.cMap.earth3d {
-            texture: '/static/images/earth1024x1024.jpg',
-            dragElement: $('#locations') 
-        }
 
     getLastContribs: () =>
         console.log "getLastContribs()"
-        return
         $.ajax
             url: '/api/map'
             type: 'GET'
             dataType: 'json'
             success: @onContribReceived
             error: console.log
+            
+    addLocation: (location, key) =>
+        @map.options.locations[key] = location
+        location.visible = true
+        @map.options.onInitLocation(location, @map)
 
     onContribReceived: (data) => 
+        locations = {
+            obj2: {
+              alpha: 1 * Math.PI / 4,
+              delta: -2 * Math.PI / 4,
+              name: 'location 2'
+            },
+            obj3: {
+              alpha: 2 * Math.PI / 4,
+              delta: 0,
+              name: 'location 3'
+            },
+            obj4: {
+              alpha: 3 * Math.PI / 4,
+              delta: 3 * Math.PI / 4,
+              name: 'location 4'
+            }
+        }
+        ###
+        for contrib in data
+            do(self=this, locations, contrib) ->
+                alpha = contrib.user.lnt
+                delta = contrib.user.lat
+                locations[contrib._id['$oid']] = {
+                    alpha: (contrib.user.lng / 100) * Math.PI / 4
+                    delta: (contrib.user.lat / 100) * Math.PI / 4
+                    name: contrib._id['$oid']
+                }
+        console.log locations
+        ###
+        console.log locations
+        console.log @uis.locations
+        @uis.cMap.earth3d {
+            texture: '/static/images/earth1024x1024.jpg',
+            dragElement: @uis.locations 
+            locations: locations
+            locationsElement: @uis.locations
+            onCreated: @onMapInitialized
+        }
+        console.log @uis.locations
+
         console.log "Received last contribs : ", data 
         
     onMapInitError: (data) =>
         console.error "An error occured while initliazing google earth: ", data
 
-    onMapInitSuccess: () =>
+    onMapInitialized: (mapInstance) =>
+        console.log "onMapInitialized(", mapInstance, ")"
+        @map = mapInstance
 
 
 class nasa.ContribForm extends Widget
@@ -59,8 +107,10 @@ class nasa.ContribForm extends Widget
 			form	: "form"			
 			imageZone 	: "#imageZone"
 			imageFile 	: ".imageFile"
+			imageLink 	: ".imageLink"
 			soundZone	: "#soundZone"
 			soundFile 	: ".soundFile"
+			soundLink 	: ".soundLink"
 			video	    : "video"
 			canvas	    : "canvas"
 			image	    : "img.avatar"
@@ -69,9 +119,9 @@ class nasa.ContribForm extends Widget
 			imageZone : null
 			soundZone : null
 		}
-		@ACTIONS = ['snapshot']
+		@ACTIONS = ['snapshot', 'sendImage', 'sendSound']
 
-	bindUI: (ui) =>		
+	bindUI: (ui) =>
 		super
 		this.relayout()
 		this.initForm()
@@ -109,20 +159,16 @@ class nasa.ContribForm extends Widget
 			@uis.video.attr('src', 'somevideo.webm')
 
 	snapshot: =>
-		console.log('pouet')
 		ctx = @uis.canvas[0].getContext('2d')
 		if @localMediaStream
 			ctx.drawImage(@uis.video[0], 0, 0)
 			# // "image/webp" works in Chrome 18. In other browsers, this will fall back to image/png.
 			@uis.image.attr('src', @uis.canvas[0].toDataURL('image/webp'))
-
-
 			# we create a local form
 			$form = $("<form enctype=\"multipart/form-data\"></form>")
 			# $form.append @uis.fileInputField.clone(true, true)
 			form =  new FormData $form[0]
 			form.append "avatar", @uis.canvas[0].toDataURL('image/webp')
-
 			# We send the data throw ajax
 			$.ajax
 				url         : "/api/upload/avatar"
@@ -137,6 +183,47 @@ class nasa.ContribForm extends Widget
 
 	hasGetUserMedia: () =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
+
+	sendImage: =>
+		if @uis.imageLink.val() != ""
+			@sendMedia('picture', @uis.imageLink.val())
+		else
+			@sendMedia('picture', @uis.imageFile, true)
+
+	sendSound: =>
+		if @uis.soundLink.val() != ""
+			@sendMedia('audio', @uis.soundLink.val())
+		else
+			@sendMedia('audio', @uis.soundFile, true)
+
+	sendMedia: (type, value, bin=false) =>
+		if not bin
+			data = {
+				type : type
+				value: value
+			}
+			$.ajax
+				url         : "/api/media"
+				type       	: 'POST'
+				data       	: data
+				dataType   	: 'json'
+		else
+			# we create a local form
+			$form = $("<form enctype=\"multipart/form-data\"></form>")
+			# $form.append @uis.fileInputField.clone(true, true)
+			form =  new FormData $form[0]
+			form.append type, value.prop("files")[0]
+			# We send the data throw ajax
+			$.ajax
+				url         : "/api/upload/#{type}"
+				type        : 'POST'
+				success     : console.log
+				error       : not console or console.log
+				data        : form
+				cache       : false
+				contentType : false
+				processData : false
+				xhr         : -> $.ajaxSettings.xhr()
 
 class nasa.Navigation extends Widget
 
