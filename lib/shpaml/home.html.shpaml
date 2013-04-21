@@ -20,7 +20,7 @@ div.widget.Navigation data-widget="nasa.Navigation"
 		#bottleme.slide
 			.wrapper.autoHeight
 				{% include 'contrib_form.html' %}
-				.next.btn-large | Next
+				> img.next src="/static/images/next.png"
 
 		#theend.slide
 			.wrapper.autoHeight
