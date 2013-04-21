@@ -43,7 +43,6 @@ class nasa.ContribMap extends Widget
             success: @onContribReceived
             error: console.log
 
-
     onContribReceived: (data) => 
         console.log "Received last contribs : ", data 
         
@@ -60,8 +59,10 @@ class nasa.ContribForm extends Widget
 			form	: "form"			
 			imageZone 	: "#imageZone"
 			imageFile 	: ".imageFile"
+			imageLink 	: ".imageLink"
 			soundZone	: "#soundZone"
 			soundFile 	: ".soundFile"
+			soundLink 	: ".soundLink"
 			video	    : "video"
 			canvas	    : "canvas"
 			image	    : "img.avatar"
@@ -70,9 +71,9 @@ class nasa.ContribForm extends Widget
 			imageZone : null
 			soundZone : null
 		}
-		@ACTIONS = ['snapshot']
+		@ACTIONS = ['snapshot', 'sendImage', 'sendSound']
 
-	bindUI: (ui) =>		
+	bindUI: (ui) =>
 		super
 		this.relayout()
 		this.initForm()
@@ -110,20 +111,16 @@ class nasa.ContribForm extends Widget
 			@uis.video.attr('src', 'somevideo.webm')
 
 	snapshot: =>
-		console.log('pouet')
 		ctx = @uis.canvas[0].getContext('2d')
 		if @localMediaStream
 			ctx.drawImage(@uis.video[0], 0, 0)
 			# // "image/webp" works in Chrome 18. In other browsers, this will fall back to image/png.
 			@uis.image.attr('src', @uis.canvas[0].toDataURL('image/webp'))
-
-
 			# we create a local form
 			$form = $("<form enctype=\"multipart/form-data\"></form>")
 			# $form.append @uis.fileInputField.clone(true, true)
 			form =  new FormData $form[0]
 			form.append "avatar", @uis.canvas[0].toDataURL('image/webp')
-
 			# We send the data throw ajax
 			$.ajax
 				url         : "/api/upload/avatar"
@@ -138,6 +135,47 @@ class nasa.ContribForm extends Widget
 
 	hasGetUserMedia: () =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
+
+	sendImage: =>
+		if @uis.imageLink.val() != ""
+			@sendMedia('picture', @uis.imageLink.val())
+		else
+			@sendMedia('picture', @uis.imageFile, true)
+
+	sendSound: =>
+		if @uis.soundLink.val() != ""
+			@sendMedia('audio', @uis.soundLink.val())
+		else
+			@sendMedia('audio', @uis.soundFile, true)
+
+	sendMedia: (type, value, bin=false) =>
+		if not bin
+			data = {
+				type : type
+				value: value
+			}
+			$.ajax
+				url         : "/api/media"
+				type       	: 'POST'
+				data       	: data
+				dataType   	: 'json'
+		else
+			# we create a local form
+			$form = $("<form enctype=\"multipart/form-data\"></form>")
+			# $form.append @uis.fileInputField.clone(true, true)
+			form =  new FormData $form[0]
+			form.append type, value.prop("files")[0]
+			# We send the data throw ajax
+			$.ajax
+				url         : "/api/upload/#{type}"
+				type        : 'POST'
+				success     : console.log
+				error       : not console or console.log
+				data        : form
+				cache       : false
+				contentType : false
+				processData : false
+				xhr         : -> $.ajaxSettings.xhr()
 
 class nasa.Navigation extends Widget
 

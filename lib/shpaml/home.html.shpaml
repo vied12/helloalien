@@ -31,17 +31,17 @@ div.widget.Navigation data-widget="nasa.Navigation"
 					> input.email type="text" name="email"  
 					> input type="file" accept="image/*;capture=camera"
 
-				#imageZone 
+				#imageZone
 					form enctype="multipart/form-data" method="POST"
 						> input.imageLink type="text" name="imageLink" 
-						> input type="submit" value="envoyer"
+						> input.do type="submit" value="envoyer" data-action='sendImage'
 						.fallback
 							> input.imageFile type="file" name="imageFile" data-type="image"
 
 				#soundZone
 					form enctype="multipart/form-data" method="POST"				
 						> input.soundLink type="text" name="soundLink" 
-						> input type="submit" value="envoyer"
+						> input.do type="submit" value="envoyer" data-action='sendSound'
 						.fallback
 							> input.soundFile type="file" name="soundFile"  data-type="sound"
 			.next.btn-large | Next
