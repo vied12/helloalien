@@ -108,6 +108,10 @@ body:
 		left: 50px;		
 	#img_2:
 		left: 91px;			
+	#img_3:
+		left: 91px;				
+	#img_5:
+		left: 91px;				
 	.header:
 		text-align :center
 		#logo:
@@ -116,9 +120,12 @@ body:
 	.relatives:
 		position : absolute
 		top : 557px
+		left : 20px
 		img:
 			position : relative
 			margin-bottom : 100px
+
+
 #analyze:
 	color : $TEXT_COLOR
 
@@ -224,5 +231,27 @@ body:
 			position : absolute;
 			top: 374px;
 			left: 128px;
+		.site:
+			position : absolute
+			left: 160px;
+			top: 540px;
+			width: 200px;
+			height: 200px;
+			.credits:
+				position : absolute
+				top: 96px;
+				left: 371px;
+				color : #222;
+				&:hover img:
+					display : block
+				img:
+					position : absolute
+					display:none
+			.back: 
+				width : 100px
+				height : 100px
+				display : block
+
+
 
 

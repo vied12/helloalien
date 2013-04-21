@@ -252,6 +252,9 @@ class nasa.Navigation extends Widget
 				@cache.activeSlide  = parseInt(nextPos)
 			)
 		)
+		$('.back').click =>
+			@cache.activeSlide  = 0
+			this.init() 
 
 	init:()=>
 		$('html,body').scrollTop(0)

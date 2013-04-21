@@ -56,6 +56,11 @@ div.widget.Navigation data-widget="nasa.Navigation"
 					.don
 						embed src="/static/images/bottle_animation.swf" width="300px height="350px" wmode="transparent"
 							> param name="wmode" value="transparent"
+					.site
+						a.credits.hidden
+							Credits
+							> img src="/static/images/credits.png"
+						a.back href="#" | &nbsp;
 
 
 {% endblock %}
