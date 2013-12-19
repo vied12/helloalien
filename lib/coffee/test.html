@@ -1,0 +1,12 @@
+<html>
+<form enctype="multipart/form-data" method='post' action='https://helloalien2.s3.amazonaws.com/'>
+	<input type='hidden' name='key'                     value='uploaded/${filename}'/>
+	<input type='hidden' name='AWSAccessKeyId'          value='AKIAINPPUWMRYEPIO6CQ'/>
+	<input type='hidden' name='acl'                     value='public-read'/>
+	<input type='hidden' name='success_action_redirect' value='http://localhost:5000/uploaded'/>
+	<input type='hidden' name='policy'                  value='eyJleHBpcmF0aW9uIjogIjIwMzAtMDEtMDFUMDA6MDA6MDBaIiwKCSJjb25kaXRpb25zIjogWwoJCXsiYnVja2V0IjogImhlbGxvYWxpZW4yIn0sIAoJCVsic3RhcnRzLXdpdGgiLCAiJGtleSIsICJ1cGxvYWRlZC8iXSwKCQl7ImFjbCI6ICJwdWJsaWMtcmVhZCJ9LAoJCXsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3QiOiAiaHR0cDovL2xvY2FsaG9zdDo1MDAwL3VwbG9hZGVkIn0sCgkJWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsIDAsIDE1MDQ4NTc2XQoJXQp9'/>
+	<input type='hidden' name='signature'               value='FOfi6WJRN28+uZpUzWj7rGc5l2I='/>
+	<input type='file' name='file'/>
+	<input type='submit' />
+</form>
+</html>

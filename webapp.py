@@ -12,14 +12,15 @@
 # -----------------------------------------------------------------------------
 
 from flask import Flask, render_template, request, send_file, \
-	send_from_directory, Response, abort, session, redirect, url_for
+	send_from_directory, Response, abort, session, redirect, url_for, make_response
 import os, json, uuid, pymongo
-from embedly import Embedly
-from pymongo import MongoClient
+from embedly        import Embedly
+from pymongo        import MongoClient
 from bson.json_util import dumps
-from httplib2 import Http
-from werkzeug import secure_filename
-from base64 import b64decode
+from httplib2       import Http
+from werkzeug       import secure_filename
+from base64         import b64decode
+import flask_s3
 
 app       = Flask(__name__)
 app.config.from_pyfile("settings.cfg")
@@ -151,6 +152,19 @@ def upload_file(file, referer, type):
 		return dumps(contrib)
 	return 'error, file unsupported'
 
+@app.route('/uploaded/<media_type>/')
+def uploaded_file_on_s3(media_type):
+	print request.args
+	filename = request.args.get('key')
+	media    = {
+		'type': media_type,
+		'url' : filename
+	}
+	contrib  = update_media(media, get_referer())
+	response = make_response( dumps(contrib))
+	response.headers['Access-Control-Allow-Origin'] = '*'
+	return response
+	# return 'ok'
 # -----------------------------------------------------------------------------
 #
 # Site pages
@@ -159,17 +173,18 @@ def upload_file(file, referer, type):
 
 @app.route('/')
 def index():
-	return render_template('home.html')
+	response = make_response(render_template('home.html'))
+	# response.headers['Access-Control-Allow-Origin'] = '*'
+	return response
 
 # -----------------------------------------------------------------------------
 #
 # Utils
 #
 # -----------------------------------------------------------------------------
-@app.route('/uploaded/<filename>')
-def uploaded_file(filename):
-	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
+# @app.route('/uploaded/<filename>')
+# def uploaded_file(filename):
+# 	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 # -----------------------------------------------------------------------------
 #
 # Main
@@ -181,6 +196,8 @@ if __name__ == '__main__':
 	import sys
 	if len(sys.argv) > 1 and sys.argv[1] == "collectstatic":
 		preprocessing._collect_static(app)
+		if app.config['USE_S3']:
+			flask_s3.create_all(app)
 	else:
 		# render ccss, coffeescript and shpaml in 'templates' and 'static' dirs
 		preprocessing.preprocess(app, request) 

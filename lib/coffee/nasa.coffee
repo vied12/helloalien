@@ -11,113 +11,67 @@
 window.nasa = {}
 
 Widget   = window.serious.Widget
-URL      = new window.serious.URL()
+# URL      = new window.serious.URL()
 Format   = window.serious.format
 Utils    = window.serious.Utils
 
-class nasa.ContribMap extends Widget
-	constructor:() ->
+# -----------------------------------------------------------------------------
+#
+#    NAVIGATION
+#
+# -----------------------------------------------------------------------------
+class nasa.Navigation extends Widget
+
+	constructor: ->
 		@UIS = {
-			cMap: '#sphere'
-			locations: '#locations'
+			wrapper : '.wrapper'
+			slides	: '.slide'
+			nextButtons : '.next'		
 		}
-		@ACTIONS = []
-		@MapAPI = null
-		@locations = {}
+		@cache = {
+			activeSlide : 3
+		}
 
-	bindUI:() =>
+	bindUI: (ui) =>		
 		super
-		@uis.cMap.earth3d {
-			texture: '/static/images/earth1024x1024.jpg',
-			dragElement: @uis.locations 
-			locationsElement: @uis.locations
-			onCreated: @onMapInitialized
-		}
-		this.getLastContribs()
-		@checkUpdate()
+		this.initPositions()
+		this.relayout()
+		$(window).on('resize',this.relayout)
+		@uis.nextButtons.each( (idx, el) => 
+			$(el).click(=>
+				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
+				nextSlide = $('.slide[data-position='+nextPos+']')
+				$('html,body').animate({ scrollTop: nextSlide.offset().top})
+				@cache.activeSlide  = parseInt(nextPos)
+			)
+		)
+		$('.back').click =>
+			@cache.activeSlide  = 0
+			this.init() 
 
+	init:()=>
+		$('html,body').scrollTop(0)
 
-	simulateBehavior: () =>
-		locations = {
-			obj1: {
-				alpha: Math.PI / 4,
-				delta: 0,
-				name: 'location 1'
-			},
-			obj2: {
-			  alpha: 1 * Math.PI / 4,
-			  delta: -2 * Math.PI / 4,
-			  name: 'location 2'
-			},
-			obj3: {
-			  alpha: 2 * Math.PI / 4,
-			  delta: 0,
-			  name: 'location 3'
-			},
-			obj4: {
-			  alpha: 3 * Math.PI / 4,
-			  delta: 3 * Math.PI / 4,
-			  name: 'location 4'
-			}
-		}
-		timeout = 1000
-		for key, location  of locations
-			do(location, key, self=this, timeout) ->
-				timeout += 1000
-				window.setTimeout(self.addLocation, timeout, self.MapAPI, location, key)
+	initPositions:() =>
+		for slide, i in @uis.slides
+			$(slide).attr('data-position', i)
 
-	getLastContribs: () =>
-		$.ajax
-			url: '/api/map'
-			type: 'GET'
-			dataType: 'json'
-			success: @onContribReceived
-			error: console.log
+	relayout:()=>
+		height = $(window).height()
+		@uis.slides.height(height)
+		@ui.find('.autoHeight').height(height)
+		@uis.slides.width($(window).width())		
+		for slide in @uis.slides
+			slide = $(slide)
+			slide.css("top",slide.attr('data-position') * height)
+		activeSlide = @ui.find('.slide[data-position='+@cache.activeSlide+']')
+		$('html,body').scrollTop(@cache.activeSlide * height)
 
-	addLocation: (map, location, key) =>
-		map.options.locations[key] = location
-		location.visible = true
-		map.options.onInitLocation(location, map)
-
-	createLocation: (contrib) =>
-		lat = Math.round(Math.random() * 3) * Math.PI / 4
-		lng = Math.round(Math.random() * 3) * Math.PI / 4
-		# lng = factor * Math.floor(Math.random * Math.PI / 4 
-		# lat = (Math.round(contrib.user.lat)) * Math.PI / 4  
-		location = {
-			key: contrib._id['$oid']
-			alpha: lng
-			delta: lat
-			name: contrib._id['$oid']
-		}
-
-	checkUpdate: () =>
-		# setInterval(@getLastContribs, 2000)
-
-	randomNegative: () =>
-		neg = Math.floor(Math.random())
-		if neg == 0
-			factor = 1
-		else
-			factor = -1 
-		return factor
-
-	onContribReceived: (data) => 
-		for contrib in data
-			do(self=this, locations, contrib) ->
-				location = self.createLocation(contrib)
-				if self.locations[location.key] is undefined
-					self.locations[location.key] = location
-					self.addLocation(self.MapAPI, location, location.key)
-		
-	onMapInitError: (data) =>
-		console.error "An error occured while initliazing google earth: ", data
-
-	onMapInitialized: (mapInstance) =>
-		@MapAPI = mapInstance
-		# @simulateBehavior()
-
-
+# -----------------------------------------------------------------------------
+#
+#    CONTRIB FORM
+#
+# -----------------------------------------------------------------------------
 class nasa.ContribForm extends Widget
 
 	constructor: ->
@@ -145,7 +99,8 @@ class nasa.ContribForm extends Widget
 	bindUI: (ui) =>
 		super
 		this.initForm()
-		@ffTweak()
+		# NOTE: $.browser.mozilla doesn't work with jquery2.0
+		# @ffTweak()
 	
 	ffTweak: () =>
 		if $.browser.mozilla
@@ -184,11 +139,6 @@ class nasa.ContribForm extends Widget
 
 	okUnhovered: =>
 		@uis.formHolder.removeClass 'ok-hovered'
-
-
-	hasGetUserMedia: =>
-		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
-			navigator.mozGetUserMedia || navigator.msGetUserMedia)
 
 	onFailSoHard: (e) =>
 		console.log('Reeeejected!')
@@ -236,7 +186,7 @@ class nasa.ContribForm extends Widget
 				processData : false
 				xhr         : -> $.ajaxSettings.xhr()
 
-	hasGetUserMedia: () =>
+	hasGetUserMedia: =>
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||	navigator.mozGetUserMedia || navigator.msGetUserMedia)		
 
 	sendImage: =>
@@ -248,80 +198,122 @@ class nasa.ContribForm extends Widget
 	sendMedia: (type, value) =>
 		# we create a local form
 		$form = $("<form enctype=\"multipart/form-data\"></form>")
-		# $form.append @uis.fileInputField.clone(true, true)
 		form =  new FormData $form[0]
-		form.append type, value.prop("files")[0]
-		# We send the data throw ajax
+		file = value.prop("files")[0]
+		form.append 'key'                    , "uploaded/${filename}"
+		form.append 'AWSAccessKeyId'         , "AKIAINPPUWMRYEPIO6CQ"
+		form.append 'acl'                    , "public-read"
+		form.append 'success_action_redirect', "http://localhost:5000/uploaded/#{type}/"
+		form.append 'policy'                 , "eyJleHBpcmF0aW9uIjogIjIwMTUtMDEtMDFUMDA6MDA6MDBaIiwKCSJjb25kaXRpb25zIjogWwoJCXsiYnVja2V0IjogImhlbGxvYWxpZW4yIn0sIAoJCVsic3RhcnRzLXdpdGgiLCAiJGtleSIsICJ1cGxvYWRlZC8iXSwKCQl7ImFjbCI6ICJwdWJsaWMtcmVhZCJ9LAoJCVsic3RhcnRzLXdpdGgiLCAiJHN1Y2Nlc3NfYWN0aW9uX3JlZGlyZWN0IiwgImh0dHA6Ly9sb2NhbGhvc3Q6NTAwMC91cGxvYWRlZC8iXSwKCQlbInN0YXJ0cy13aXRoIiwgIiRjb250ZW50LXR5cGUiLCAiIl0sCgkJWyJzdGFydHMtd2l0aCIsICIkeC1hbXotbWV0YS10eXBlIiwgIiJdLAoJCVsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxNTA0ODU3Nl0KCV0KfQ=="
+		form.append 'signature'              , "bznZKwc2LLY7IxjCZfEIXjucLT4="
+		form.append 'x-amz-meta-type'        , type
+		form.append 'Content-Type'           , file.type
+		form.append 'file'                   , file
 		$.ajax
-			url         : "/api/upload/#{type}"
-			type        : 'POST'
-			success     : @onMediaSent
-			error       : not console or console.log
-			data        : form
-			cache       : false
-			contentType : false
-			processData : false
-			xhr         : -> $.ajaxSettings.xhr()
+			url     : "https://helloalien2.s3.amazonaws.com/"
+			type    : "POST"
+			success :(a) =>
+				console.log(a)
+			data    : form
+			cache   : false
+			dataType: "json"
+			contentType: false
+			processData: false
+			xhr : -> $.ajaxSettings.xhr()
 
 	onMediaSent: (data) =>
-		response = JSON.parse(JSON.parse(data)) #DA FUK IZ DAT ? 
+		response = JSON.parse(JSON.parse(data)) #DA FUK IZ DAT ? LOL@!?
 		for media in response.medias
 			if media.type = 'picture'
 				@cache.imageUploaded = true
 			if media.type = 'audio'
 				@cache.soundUploaded = true
 
-
-
-class nasa.Navigation extends Widget
+# -----------------------------------------------------------------------------
+#
+#    GLOBE
+#
+# -----------------------------------------------------------------------------
+class nasa.ContribMap extends Widget
 
 	constructor: ->
-		@UIS = {
-			wrapper : '.wrapper'
-			slides	: '.slide'
-			nextButtons : '.next'		
-		}
-		@cache = {
-			activeSlide : 0
-		}
 
-	bindUI: (ui) =>		
+		@UIS = 
+			wrapper : "#contrib-map"
+		@path
+		@λ
+		@φ
+		@svg
+		@projection
+
+	bindUI: (ui) =>
 		super
-		this.initPositions()
-		this.relayout()
-		$(window).on('resize',this.relayout)
-		@uis.nextButtons.each( (idx, el) => 
-			$(el).click(=>
-				nextPos = parseInt($(el).parents('.slide').attr('data-position')) + 1
-				nextSlide = $('.slide[data-position='+nextPos+']')
-				$('html,body').animate({ scrollTop: nextSlide.offset().top})
-				@cache.activeSlide  = parseInt(nextPos)
-			)
-		)
-		$('.back').click =>
-			@cache.activeSlide  = 0
-			this.init() 
+		width  = 400
+		height = 400
+		@revolution = 40000
+		that = @
+		@projection = d3.geo.orthographic()
+			.scale(200)
+			.translate([width / 2, height / 2])
+			.clipAngle(90)
+		@path = d3.geo.path()
+			.projection(@projection)
 
-	init:()=>
-		$('html,body').scrollTop(0)
+		@λ = d3.scale.linear()
+			.domain([0, @revolution])
+			.range([-180, 180])
 
-	initPositions:() =>
-		slideIdx=0
-		for slide in @uis.slides
-			slide = $(slide)
-			slide.attr('data-position', slideIdx)
-			slideIdx++
+		@φ = d3.scale.linear()
+			.domain([0, @revolution])
+			.range([90, -90])
 
-	relayout:()=>
-		height = $(window).height()	
-		@uis.slides.height(height)
-		@ui.find('.autoHeight').height(height)
-		@uis.slides.width($(window).width())		
-		for slide in @uis.slides
-			slide = $(slide)
-			slide.css("top",slide.attr('data-position') * height)
-		activeSlide = @ui.find('.slide[data-position='+@cache.activeSlide+']')
-		$('html,body').scrollTop(@cache.activeSlide * height)
+		@svg = d3.select(@uis.wrapper[0]).append("svg")
+			.attr("width", width)
+			.attr("height", height)
+
+		
+		@groupPaths = @svg.append("g").attr("class", "all-path")
+		
+		@loadGraticule()
+
+		# @svg.on "click", ->
+		# 	p = d3.mouse(this)
+		# 	console.log([that.λ(p[0]), that.φ(p[1])])
+		# 	that.projection.rotate([that.λ(p[0]), that.φ(p[1])])
+		# 	that.svg.selectAll("path").attr("d", that.path)
+
+		d3.json("/static/images/map.json", @onMapLoaded)
+
+		@startAnimation()
+
+	loadGraticule: =>
+		graticule   = d3.geo.graticule()
+		@groupPaths.append("path")
+			.datum(graticule)
+			.attr("class", "graticule")
+			.attr("d", @path)
+	onMapLoaded : (error, world) =>
+		@groupPaths.append("path")
+			.datum(topojson.feature(world, world.objects.land))
+			.attr("class", "land")
+			.attr("d", @path)
+
+	startAnimation: =>
+		requestAnimationFrame @rotate()
+
+	rotate : =>
+		return (timestamp) =>
+			if not @start?
+				@start = timestamp
+			progress = timestamp - @start
+			@projection.rotate([@λ(progress), -20])
+			@groupPaths.selectAll('path').attr("d", @path)
+			if progress < @revolution
+				requestAnimationFrame @rotate()
+			else
+				@start = undefined
+				requestAnimationFrame @rotate()
+			
 
 # -----------------------------------------------------------------------------
 #
