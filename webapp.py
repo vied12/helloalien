@@ -1,29 +1,33 @@
 #!/usr/bin/env python
 # Encoding: utf-8
 # -----------------------------------------------------------------------------
-# Project : 
+# Project : Hello Alien
 # -----------------------------------------------------------------------------
 # Author : Edouard Richard                                  <edou4rd@gmail.com>
 # -----------------------------------------------------------------------------
 # License : GNU Lesser General Public License
 # -----------------------------------------------------------------------------
-# Creation : 
-# Last mod : 
+# Creation : 20-Apr-2013
+# Last mod : 19-Dec-2013
 # -----------------------------------------------------------------------------
 
 from flask import Flask, render_template, request, send_file, \
 	send_from_directory, Response, abort, session, redirect, url_for, make_response
 import os, json, uuid, pymongo
-from embedly        import Embedly
-from pymongo        import MongoClient
-from bson.json_util import dumps
-from httplib2       import Http
-from werkzeug       import secure_filename
-from base64         import b64decode
+from flask.ext.assets import Environment
+from embedly          import Embedly
+from pymongo          import MongoClient
+from bson.json_util   import dumps
+from httplib2         import Http
+from werkzeug         import secure_filename
+from base64           import b64decode
 import flask_s3
 
 app       = Flask(__name__)
 app.config.from_pyfile("settings.cfg")
+
+# Flask Assets
+Environment(app)
 
 def get_collection(collection):
 	client = MongoClient(app.config['MONGO_HOST'])
@@ -197,7 +201,7 @@ if __name__ == '__main__':
 	if len(sys.argv) > 1 and sys.argv[1] == "collectstatic":
 		preprocessing._collect_static(app)
 		if app.config['USE_S3']:
-			flask_s3.create_all(app)
+				flask_s3.create_all(app)
 	else:
 		# render ccss, coffeescript and shpaml in 'templates' and 'static' dirs
 		preprocessing.preprocess(app, request) 
@@ -205,4 +209,5 @@ if __name__ == '__main__':
 		# cache = werkzeug.contrib.cache.FileSystemCache(os.path.join(app.root_path, "cache"))
 		# run application
 		app.run()
+
 # EOF

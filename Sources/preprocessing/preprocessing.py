@@ -34,8 +34,8 @@ def _scan(folder, dest, action, extension, new_extension=None):
 		if os.name =='nt':
 			folder_char='\\'
 		directories   = path.split(folder_char)
-		if 'lib' in directories:
-			index_lib = directories.index('lib')
+		if 'Lib' in directories:
+			index_lib = directories.index('Lib')
 		else:
 			index_lib = 0
 		relative_path = folder_char.join(directories[0:index_lib+2])
@@ -117,7 +117,7 @@ def _collect_static(app):
 		for path, subdirs, filenames in os.walk(os.path.join(lib, d)):
 			for f in [os.path.join(path, filename) for filename in filenames]:
 				if os.path.isfile(f):
-					dst = os.path.join(static_dir, os.path.relpath(path, 'lib'), os.path.basename(f))
+					dst = os.path.join(static_dir, os.path.relpath(path, 'Lib'), os.path.basename(f))
 					if not os.path.exists(os.path.dirname(dst)):
 						os.makedirs(os.path.dirname(dst))
 					shutil.copyfile(f, dst)
